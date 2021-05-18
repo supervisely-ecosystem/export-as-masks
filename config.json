@@ -9,12 +9,12 @@
   "main_script": "src/export_as_masks.py",
   "modal_template": "src/modal.html",
   "modal_template_state": {
-    "humanMasks": "enable",
-    "machineMasks": "enable",
+    "humanMasks": "true",
+    "machineMasks": "true",
     "thickness": 2
   },
   "task_location": "workspace_tasks",
-  "icon": "https://i.imgur.com/zTseThz.png",
+  "icon": "https://i.imgur.com/3uG4xf9.png",
   "icon_background": "#FFFFFF",
   "headless": true,
   "context_menu": {
