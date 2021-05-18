@@ -5,10 +5,12 @@
     </sly-field>
     <sly-field title="Human masks"
                description="Segmentation masks that human eye is able to recognize">
-        <el-checkbox v-model="state.humanMasks" true-value="true" false-value="">enable</el-checkbox>
+        <el-checkbox v-model="state.humanMasks">enable</el-checkbox>
+        {{state.humanMasks}}
     </sly-field>
     <sly-field title="Machine masks"
                description="Segmentation masks for AI">
-        <el-checkbox v-model="state.machineMasks" true-value="true" false-value="">enable</el-checkbox>
+        <el-checkbox v-model="state.machineMasks">enable</el-checkbox>
+        {{state.machineMasks}}
     </sly-field>
 </div>

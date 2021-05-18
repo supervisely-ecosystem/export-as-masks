@@ -4,6 +4,7 @@ import supervisely_lib as sly
 from supervisely_lib.io.json import dump_json_file
 from PIL import Image
 
+import distutils
 
 task_id = os.environ["TASK_ID"]
 TEAM_ID = int(os.environ['context.teamId'])
@@ -13,14 +14,18 @@ PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 my_app = sly.AppService()
 
 Image.MAX_IMAGE_PIXELS = None
-HUMAN_MASKS = bool(os.environ['modal.state.humanMasks'])
-MACHINE_MASKS = bool(os.environ['modal.state.machineMasks'])
+HUMAN_MASKS = os.environ['modal.state.humanMasks']
+MACHINE_MASKS = os.environ['modal.state.machineMasks']
 THICKNESS = int(os.environ['modal.state.thickness'])
 
 
 @my_app.callback("export_as_masks")
 @sly.timeit
 def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
+
+    app_logger(HUMAN_MASKS)
+    app_logger(MACHINE_MASKS)
+
     project_info = api.project.get_info_by_id(PROJECT_ID)
     dataset_ids = [ds.id for ds in api.dataset.get_list(PROJECT_ID)]
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
