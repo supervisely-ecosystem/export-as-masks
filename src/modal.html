@@ -5,10 +5,22 @@
     </sly-field>
     <sly-field title="Human masks"
                description="Download human masks from project">
-        <el-checkbox v-model="state.humanMasks" label="true">enable</el-checkbox>
+        <el-checkbox v-model="state.humanMasks" checked>enable</el-checkbox>
     </sly-field>
     <sly-field title="Machine masks"
                description="Download machine masks from project">
-        <el-checkbox v-model="state.machineMasks" label="true">enable</el-checkbox>
+        <el-checkbox v-model="state.machineMasks" checked>enable</el-checkbox>
     </sly-field>
 </div>
+
+<script src="https://unpkg.com/vue"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            on: true,
+            off:false,
+            light: true
+        }
+    });
+</script>

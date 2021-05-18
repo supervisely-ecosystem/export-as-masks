@@ -116,10 +116,8 @@ def main():
         "context.workspaceId": WORKSPACE_ID
     })
 
-    initial_events = [{"state": None, "context": None, "command": "export_as_masks"}]
-
     # Run application service
-    my_app.run(initial_events=initial_events)
+    my_app.run(initial_events=[{"command": "export_as_masks"}])
 
 
 if __name__ == "__main__":
