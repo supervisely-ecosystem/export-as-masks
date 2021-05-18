@@ -1,18 +1,18 @@
 <div>
     <sly-field title="Mask Thickness"
                description="Determines thickness of masks.">
-        <el-slider v-model="state.pascalContourThickness" :min="0" :max="5" show-input></el-slider>
-    </sly-field>
-    <sly-field title="Raise error"
-               description="Error will be raised, if mask could not be downloaded, otherwise will skip error.">
-        <el-checkbox v-model="checked">Raise error</el-checkbox>
+        <el-input-number v-model="state.thickness"></el-input-number>
     </sly-field>
     <sly-field title="Human masks"
-               description="Download human masks from project.">
-        <el-checkbox v-model="checked">Human masks</el-checkbox>
+               description="Download human masks from project">
+        <el-checkbox v-model="state.humanMasks">enable</el-checkbox>
     </sly-field>
     <sly-field title="Machine masks"
-               description="Download masks from project.">
-        <el-checkbox v-model="checked">Machine masks</el-checkbox>
+               description="Download machine masks from project">
+        <el-checkbox v-model="state.humanMasks">enable</el-checkbox>
+    </sly-field>
+    <sly-field title="Allow images with huge resolution"
+               description="PIL library raises error if image exceeds limit of 256000000 pixels, could be decompression bomb DOS attack.">
+        <el-checkbox v-model="state.humanMasks">allow</el-checkbox>
     </sly-field>
 </div>
