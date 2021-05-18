@@ -4,11 +4,11 @@
         <el-input-number v-model="state.thickness"></el-input-number>
     </sly-field>
     <sly-field title="Human masks"
-               description="Download human masks from project">
-        <el-checkbox v-model="state.humanMasks">enable</el-checkbox>
+               description="Segmentation masks that human eye is able to recognize">
+        <el-checkbox v-model="state.humanMasks" true-value="true" false-value="">enable</el-checkbox>
     </sly-field>
     <sly-field title="Machine masks"
-               description="Download machine masks from project">
-        <el-checkbox v-model="state.machineMasks">enable</el-checkbox>
+               description="Segmentation masks for AI">
+        <el-checkbox v-model="state.machineMasks" true-value="true" false-value="">enable</el-checkbox>
     </sly-field>
 </div>

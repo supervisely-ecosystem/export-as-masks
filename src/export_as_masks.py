@@ -28,9 +28,8 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
 
-    if MACHINE_MASKS is True or HUMAN_MASKS is True:
+    if MACHINE_MASKS is True or MACHINE_MASKS is True:
         project = sly.Project(directory=dest_dir, mode=sly.OpenMode.READ)
-
         if MACHINE_MASKS:
             machine_colors = {obj_class.name: [idx, idx, idx] for idx, obj_class in
                               enumerate(project.meta.obj_classes, start=1)}
@@ -43,7 +42,6 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
             if HUMAN_MASKS is True:
                 human_masks_dir = os.path.join(dataset.directory, 'masks_human')
                 sly.fs.mkdir(human_masks_dir)
-
             if MACHINE_MASKS is True:
                 machine_masks_dir = os.path.join(dataset.directory, 'masks_machine')
                 sly.fs.mkdir(machine_masks_dir)
@@ -51,14 +49,11 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
             for item_name in dataset:
                 item_paths = dataset.get_item_paths(item_name)
                 ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
-
                 if MACHINE_MASKS is True or HUMAN_MASKS is True:
                     mask_img_name = os.path.splitext(item_name)[0] + '.png'
 
-                # Render and save human interpretable masks.
                 raw_img = sly.image.read(item_paths.img_path)
                 raw_img_rendered = raw_img.copy()
-
                 if HUMAN_MASKS is True:
                     for label in ann.labels:
                         label.geometry.draw(raw_img_rendered,
@@ -69,7 +64,6 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                     sly.image.write(os.path.join(human_masks_dir, mask_img_name),
                                     np.concatenate([raw_img, raw_img_rendered], axis=1))
 
-                # Render and save machine readable masks.
                 if MACHINE_MASKS is True:
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
                     for label in ann.labels:
@@ -77,19 +71,15 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                     sly.image.write(os.path.join(machine_masks_dir, mask_img_name), machine_mask)
 
                     ds_progress.iter_done_report()
-
         sly.logger.info('Finished masks rendering.'.format(project_info.name))
-
 
     full_archive_name = str(project_info.id) + '_' + project_info.name + '.tar'
     result_archive = os.path.join(my_app.data_dir, full_archive_name)
-
     sly.fs.archive_directory(dest_dir, result_archive)
     app_logger.info("Result directory is archived")
 
     upload_progress = []
     remote_archive_path = "/Export-as-masks/{}/{}".format(task_id, full_archive_name)
-
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
             upload_progress.append(sly.Progress(message="Upload {!r}".format(full_archive_name),
@@ -113,8 +103,9 @@ def main():
         "context.workspaceId": WORKSPACE_ID
     })
 
+    state = {}
     # Run application service
-    my_app.run(initial_events=[{"command": "export_as_masks"}])
+    my_app.run(state=state, initial_events=[{"command": "export_as_masks"}])
 
 
 if __name__ == "__main__":
