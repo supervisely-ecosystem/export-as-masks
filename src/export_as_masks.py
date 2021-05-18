@@ -22,10 +22,6 @@ THICKNESS = int(os.environ['modal.state.thickness'])
 @my_app.callback("export_as_masks")
 @sly.timeit
 def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
-
-    app_logger.info(HUMAN_MASKS)
-    app_logger.info(MACHINE_MASKS)
-
     project_info = api.project.get_info_by_id(PROJECT_ID)
     dataset_ids = [ds.id for ds in api.dataset.get_list(PROJECT_ID)]
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
@@ -33,7 +29,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
 
-    if MACHINE_MASKS is True or MACHINE_MASKS is True:
+    if MACHINE_MASKS is True or HUMAN_MASKS is True:
         project = sly.Project(directory=dest_dir, mode=sly.OpenMode.READ)
         if MACHINE_MASKS:
             machine_colors = {obj_class.name: [idx, idx, idx] for idx, obj_class in
@@ -54,8 +50,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
             for item_name in dataset:
                 item_paths = dataset.get_item_paths(item_name)
                 ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
-                if MACHINE_MASKS is True or HUMAN_MASKS is True:
-                    mask_img_name = os.path.splitext(item_name)[0] + '.png'
+                mask_img_name = os.path.splitext(item_name)[0] + '.png'
 
                 raw_img = sly.image.read(item_paths.img_path)
                 raw_img_rendered = raw_img.copy()
@@ -85,6 +80,8 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
 
     upload_progress = []
     remote_archive_path = "/Export-as-masks/{}/{}".format(task_id, full_archive_name)
+
+
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
             upload_progress.append(sly.Progress(message="Upload {!r}".format(full_archive_name),
