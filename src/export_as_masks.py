@@ -31,7 +31,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
 
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
 
-    if MACHINE_MASKS == 'enable' or HUMAN_MASKS == 'enable':
+    if MACHINE_MASKS == 'true' or HUMAN_MASKS == 'true':
         project = sly.Project(directory=dest_dir, mode=sly.OpenMode.READ)
 
         if MACHINE_MASKS:
@@ -43,11 +43,11 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
             ds_progress = sly.Progress(
                 'Processing dataset: {!r}/{!r}'.format(project.name, dataset.name), total_cnt=len(dataset))
 
-            if HUMAN_MASKS == 'enable':
+            if HUMAN_MASKS == 'true':
                 human_masks_dir = os.path.join(dataset.directory, 'masks_human')
                 sly.fs.mkdir(human_masks_dir)
 
-            if MACHINE_MASKS == 'enable':
+            if MACHINE_MASKS == 'true':
                 machine_masks_dir = os.path.join(dataset.directory, 'masks_machine')
                 sly.fs.mkdir(machine_masks_dir)
 
@@ -55,14 +55,14 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                 item_paths = dataset.get_item_paths(item_name)
                 ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
 
-                if MACHINE_MASKS == 'enable' or HUMAN_MASKS == 'enable':
+                if MACHINE_MASKS == 'true' or HUMAN_MASKS == 'true':
                     mask_img_name = os.path.splitext(item_name)[0] + '.png'
 
                 # Render and save human interpretable masks.
                 raw_img = sly.image.read(item_paths.img_path)
                 raw_img_rendered = raw_img.copy()
 
-                if HUMAN_MASKS == 'enable':
+                if HUMAN_MASKS == 'true':
                     for label in ann.labels:
                         label.geometry.draw(raw_img_rendered,
                                             color=label.obj_class.color,
@@ -73,7 +73,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                                     np.concatenate([raw_img, raw_img_rendered], axis=1))
 
                 # Render and save machine readable masks.
-                if MACHINE_MASKS == 'enable':
+                if MACHINE_MASKS == 'true':
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
                     for label in ann.labels:
                         label.geometry.draw(machine_mask, color=machine_colors[label.obj_class.name], thickness=THICKNESS)
@@ -91,7 +91,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     app_logger.info("Result directory is archived")
 
     upload_progress = []
-    remote_archive_path = "/ApplicationsData/Export-to-Pascal-VOC/{}/{}".format(task_id, full_archive_name)
+    remote_archive_path = "/Export-as-masks/{}/{}".format(task_id, full_archive_name)
 
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
