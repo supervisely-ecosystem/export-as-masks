@@ -9,8 +9,8 @@
   "main_script": "src/export_as_masks.py",
   "modal_template": "src/modal.html",
   "modal_template_state": {
-    "humanMasks": "true",
-    "machineMasks": "true",
+    "humanMasks": true,
+    "machineMasks": true,
     "thickness": 2
   },
   "task_location": "workspace_tasks",

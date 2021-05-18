@@ -13,25 +13,24 @@ PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 my_app = sly.AppService()
 
 Image.MAX_IMAGE_PIXELS = None
-HUMAN_MASKS = os.environ['modal.state.humanMasks']
-MACHINE_MASKS = os.environ['modal.state.machineMasks']
+HUMAN_MASKS = bool(os.environ['modal.state.humanMasks'])
+MACHINE_MASKS = bool(os.environ['modal.state.machineMasks'])
 THICKNESS = int(os.environ['modal.state.thickness'])
 
+print(type(HUMAN_MASKS))
+print(type(MACHINE_MASKS))
 
 @my_app.callback("export_as_masks")
 @sly.timeit
 def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     project_info = api.project.get_info_by_id(PROJECT_ID)
-
     dataset_ids = [ds.id for ds in api.dataset.get_list(PROJECT_ID)]
-
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
     dest_dir = os.path.join(my_app.data_dir, f'{project_info.id}_{project_info.name}')
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
-
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
 
-    if MACHINE_MASKS == "true" or HUMAN_MASKS == "true":
+    if MACHINE_MASKS is True or HUMAN_MASKS is True:
         project = sly.Project(directory=dest_dir, mode=sly.OpenMode.READ)
 
         if MACHINE_MASKS:
@@ -43,11 +42,11 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
             ds_progress = sly.Progress(
                 'Processing dataset: {!r}/{!r}'.format(project.name, dataset.name), total_cnt=len(dataset))
 
-            if HUMAN_MASKS == "true":
+            if HUMAN_MASKS is True:
                 human_masks_dir = os.path.join(dataset.directory, 'masks_human')
                 sly.fs.mkdir(human_masks_dir)
 
-            if MACHINE_MASKS == "true":
+            if MACHINE_MASKS is True:
                 machine_masks_dir = os.path.join(dataset.directory, 'masks_machine')
                 sly.fs.mkdir(machine_masks_dir)
 
@@ -55,14 +54,14 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                 item_paths = dataset.get_item_paths(item_name)
                 ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
 
-                if MACHINE_MASKS == "true" or HUMAN_MASKS == "true":
+                if MACHINE_MASKS is True or HUMAN_MASKS is True:
                     mask_img_name = os.path.splitext(item_name)[0] + '.png'
 
                 # Render and save human interpretable masks.
                 raw_img = sly.image.read(item_paths.img_path)
                 raw_img_rendered = raw_img.copy()
 
-                if HUMAN_MASKS == "true":
+                if HUMAN_MASKS is True:
                     for label in ann.labels:
                         label.geometry.draw(raw_img_rendered,
                                             color=label.obj_class.color,
@@ -73,7 +72,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                                     np.concatenate([raw_img, raw_img_rendered], axis=1))
 
                 # Render and save machine readable masks.
-                if MACHINE_MASKS == "true":
+                if MACHINE_MASKS is True:
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
                     for label in ann.labels:
                         label.geometry.draw(machine_mask, color=machine_colors[label.obj_class.name], thickness=THICKNESS)
