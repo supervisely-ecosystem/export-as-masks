@@ -26,7 +26,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     dataset_ids = [ds.id for ds in api.dataset.get_list(PROJECT_ID)]
 
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
-    dest_dir = os.path.join(my_app.data_dir, 'Export-as-masks', f'{project_info.id}_{project_info.name}')
+    dest_dir = os.path.join(my_app.data_dir, f'{project_info.id}_{project_info.name}')
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
 
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))

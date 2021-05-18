@@ -5,10 +5,10 @@
     </sly-field>
     <sly-field title="Human masks"
                description="Download human masks from project">
-        <el-checkbox v-model="state.humanMasks" checked>enable</el-checkbox>
+        <el-checkbox v-model="state.humanMasks" :checked="state.thickness === true">enable</el-checkbox>
     </sly-field>
     <sly-field title="Machine masks"
                description="Download machine masks from project">
-        <el-checkbox v-model="state.machineMasks" checked>enable</el-checkbox>
+        <el-checkbox v-model="state.machineMasks" :checked="state.thickness === true">enable</el-checkbox>
     </sly-field>
 </div>
