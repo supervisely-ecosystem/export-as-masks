@@ -4,7 +4,7 @@ import supervisely_lib as sly
 from supervisely_lib.io.json import dump_json_file
 from PIL import Image
 
-import distutils
+from distutils.util import strtobool
 
 task_id = os.environ["TASK_ID"]
 TEAM_ID = int(os.environ['context.teamId'])
@@ -14,8 +14,8 @@ PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 my_app = sly.AppService()
 
 Image.MAX_IMAGE_PIXELS = None
-HUMAN_MASKS = os.environ['modal.state.humanMasks']
-MACHINE_MASKS = os.environ['modal.state.machineMasks']
+HUMAN_MASKS = bool(strtobool(os.environ['modal.state.humanMasks']))
+MACHINE_MASKS = bool(strtobool(os.environ['modal.state.machineMasks']))
 THICKNESS = int(os.environ['modal.state.thickness'])
 
 
