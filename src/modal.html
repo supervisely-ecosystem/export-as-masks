@@ -1,0 +1,18 @@
+<div>
+    <sly-field title="Mask Thickness"
+               description="Determines thickness of masks.">
+        <el-input-number v-model="state.thickness"></el-input-number>
+    </sly-field>
+    <sly-field title="Human masks"
+               description="Download human masks from project">
+        <el-checkbox v-model="state.humanMasks" label="enable">enable</el-checkbox>
+    </sly-field>
+    <sly-field title="Machine masks"
+               description="Download machine masks from project">
+        <el-checkbox v-model="state.humanMasks" label="enable">enable</el-checkbox>
+    </sly-field>
+    <sly-field title="Allow images with huge resolution"
+               description="PIL library raises error if image exceeds limit of 256000000 pixels, could be decompression bomb DOS attack.">
+        <el-checkbox v-model="state.humanMasks" label="enable">allow</el-checkbox>
+    </sly-field>
+</div>
