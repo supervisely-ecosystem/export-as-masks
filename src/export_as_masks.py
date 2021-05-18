@@ -10,8 +10,6 @@ TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
 PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 
-DEBUG_APP_DIR = str(os.environ["DEBUG_APP_DIR"])
-
 my_app = sly.AppService()
 
 Image.MAX_IMAGE_PIXELS = None
@@ -28,7 +26,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     dataset_ids = [ds.id for ds in api.dataset.get_list(PROJECT_ID)]
 
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
-    dest_dir = os.path.join(DEBUG_APP_DIR, project_info.name)
+    dest_dir = os.path.join(sly.TaskPaths.OUT_ARTIFACTS_DIR, project_info.name)
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
 
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
