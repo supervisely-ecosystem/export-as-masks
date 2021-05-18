@@ -9,10 +9,6 @@
     </sly-field>
     <sly-field title="Machine masks"
                description="Download machine masks from project">
-        <el-checkbox v-model="state.humanMasks" label="enable">enable</el-checkbox>
-    </sly-field>
-    <sly-field title="Allow images with huge resolution"
-               description="PIL library raises error if image exceeds limit of 256000000 pixels, could be decompression bomb DOS attack.">
-        <el-checkbox v-model="state.humanMasks" label="enable">allow</el-checkbox>
+        <el-checkbox v-model="state.machineMasks" label="enable">enable</el-checkbox>
     </sly-field>
 </div>

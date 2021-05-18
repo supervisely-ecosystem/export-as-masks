@@ -14,15 +14,11 @@ DEBUG_APP_DIR = str(os.environ["DEBUG_APP_DIR"])
 
 my_app = sly.AppService()
 
-Image.MAX_IMAGE_PIXELS = 16000 * 16000
-PIL_ERROR = os.environ['modal.state.raiseError']
+Image.MAX_IMAGE_PIXELS = None
 HUMAN_MASKS = os.environ['modal.state.humanMasks']
 MACHINE_MASKS = os.environ['modal.state.machineMasks']
 THICKNESS = int(os.environ['modal.state.thickness'])
 
-# fix чтобы не падало +
-# modal window
-# readme (simple)
 
 @my_app.callback("export_as_masks")
 @sly.timeit
@@ -34,6 +30,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
     dest_dir = os.path.join(DEBUG_APP_DIR, project_info.name)
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
+
     sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
 
     if MACHINE_MASKS == 'enable' or HUMAN_MASKS == 'enable':
