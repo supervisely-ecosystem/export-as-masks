@@ -17,8 +17,6 @@ HUMAN_MASKS = bool(os.environ['modal.state.humanMasks'])
 MACHINE_MASKS = bool(os.environ['modal.state.machineMasks'])
 THICKNESS = int(os.environ['modal.state.thickness'])
 
-print(type(HUMAN_MASKS))
-print(type(MACHINE_MASKS))
 
 @my_app.callback("export_as_masks")
 @sly.timeit
