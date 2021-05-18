@@ -23,8 +23,8 @@ THICKNESS = int(os.environ['modal.state.thickness'])
 @sly.timeit
 def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
 
-    app_logger(HUMAN_MASKS)
-    app_logger(MACHINE_MASKS)
+    app_logger.info(HUMAN_MASKS)
+    app_logger.info(MACHINE_MASKS)
 
     project_info = api.project.get_info_by_id(PROJECT_ID)
     dataset_ids = [ds.id for ds in api.dataset.get_list(PROJECT_ID)]
