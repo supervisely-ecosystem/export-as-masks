@@ -24,7 +24,7 @@ Export prepares downloadable `.tar` archive, that contains:
 - original images
 - annotations in [Supervisely JSON format](https://docs.supervise.ly/data-organization/00_ann_format_navi)
 - human masks - RGB masks where every pixel has the color of the corresponding class (semantic segmentation)
-- machine masks. Notice: if you open machine mask image, it will look like completely black image, but it is not. Classes colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1,  (2, 2, 2) - for class #2, and etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file. For example:   
+- machine masks. Notice: if you open machine mask image in standart image viewer, it will look like completely black image, but it is not. Classes colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1,  (2, 2, 2) - for class #2, and etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file. For example:   
 
 ```json
 {
@@ -44,11 +44,11 @@ Export prepares downloadable `.tar` archive, that contains:
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://app.supervise.ly/apps/ecosystem/export-as-masks) if it is not there.
 
-**Step 2**: Open context menu of project -> `Download via App` -> `Export as masks` 
+**Step 2**: Open context menu of images project -> `Download via App` -> `Export as masks` 
 
 <img src="https://i.imgur.com/IcceeId.png" width="500"/>
 
-**Step 3**: Select the project export options.
+**Step 3**: Define export settings in modal window.
 
 <img src="https://i.imgur.com/ep9i3Xb.png" width="400"/>
 
