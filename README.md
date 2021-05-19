@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/dXSH2wY.png"/>
+<img src="https://i.imgur.com/cSKqGwr.png"/>
 
 
 # Export As Masks
