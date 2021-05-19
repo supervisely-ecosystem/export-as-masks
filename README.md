@@ -1,7 +1,6 @@
 <div align="center" markdown>
 <img src="https://i.imgur.com/cSKqGwr.png"/>
 
-
 # Export As Masks
 
 <p align="center">
@@ -42,20 +41,17 @@ Export prepares downloadable `.tar` archive, that contains:
 ```
 
 ## How To Run 
-**Step 1**: Add app to your team from [Ecosystem](https://app.supervise.ly/apps/ecosystem/export-as-masks) if it is not there.
+**Step 1**: Add app to your team from [Ecosystem](https://app.supervise.ly/apps/ecosystem/export-as-masks) if it is not there
 
 **Step 2**: Open context menu of images project -> `Download via App` -> `Export as masks` 
 
 <img src="https://i.imgur.com/IcceeId.png" width="500"/>
 
-**Step 3**: Define export settings in modal window.
+**Step 3**: Define export settings in modal window
 
 <img src="https://i.imgur.com/ep9i3Xb.png" width="400"/>
 
-## How to use
-
-After running the application, you will be redirected to the `Tasks` page. Once application processing has finished, your link for downloading will be available. Click on the `file name` to download it.
+**Step 4**: Result archive will be available for download in `Tasks` list (image below) or from `Team Files` (path format is the following `Team Files`->`Export-as-masks`->`<task_id>_<projectId>_<projectName>.tar`)
 
 <img src="https://i.imgur.com/hibPn9b.png"/>
 
-**Note** You can also find your converted project in: `Team Files`->`Export-as-masks`->`<taskId>`->`<projectId>_<projectName>.tar`
