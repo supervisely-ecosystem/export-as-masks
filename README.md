@@ -49,7 +49,7 @@ Export prepares downloadable `.tar` archive, that contains:
 
 **Step 3**: Define export settings in modal window
 
-<img src="https://i.imgur.com/ep9i3Xb.png" width="400"/>
+<img src="https://i.imgur.com/T9uHAfl.png" width="400"/>
 
 **Step 4**: Result archive will be available for download in `Tasks` list (image below) or from `Team Files` (path format is the following `Team Files`->`Export-as-masks`->`<task_id>_<projectId>_<projectName>.tar`)
 
