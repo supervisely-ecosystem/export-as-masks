@@ -58,4 +58,4 @@ After running the application, you will be redirected to the `Tasks` page. Once 
 
 <img src="https://i.imgur.com/hibPn9b.png"/>
 
-**Note** You can also find your converted project in: `Team Files`->`Export-as-masks`->`<appId>`->`<projectId>_<projectName>.tar`
+**Note** You can also find your converted project in: `Team Files`->`Export-as-masks`->`<taskId>`->`<projectId>_<projectName>.tar`
