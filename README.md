@@ -2,7 +2,7 @@
 <img src="https://i.imgur.com/dXSH2wY.png"/>
 
 
-# Export only labeled items
+# Export As Masks
 
 <p align="center">
   <a href="#Overview">Overview</a> •
@@ -20,9 +20,10 @@
 
 ## Overview
 
-Application exports images, annotations, human and machine masks from [Supervisely](https://app.supervise.ly) project and prepares downloadable `.tar` archive. Human mask is an RGB mask with classes colors (semantic segementation). Classes colors for machine mask are generated automatically for class indices as pixel colors, 
-e.g:
-```text
+Application exports images, annotations, human and machine masks from [Supervisely](https://app.supervise.ly) project and prepares downloadable `.tar` archive. Human mask is an RGB mask with classes colors (semantic segementation). 
+
+Notice: if you open machine mask image, it will look like completely black image, but it is not. Classes colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1,  (2, 2, 2) - for class #2, and etc ... Mapping between colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file. Example:
+```json
 {
   "kiwi": [
     1,
@@ -36,7 +37,6 @@ e.g:
   ]
 }
 ```
-Color map for machine masks is saved to `obj_class_to_machine_color.json` file.
 
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://app.supervise.ly/apps/ecosystem/export-as-masks) if it is not there.
