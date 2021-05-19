@@ -1,14 +1,14 @@
 <div>
     <sly-field title="Mask Thickness"
-               description="Determines thickness of masks.">
+               description="The line width of object borders">
         <el-input-number v-model="state.thickness"></el-input-number>
     </sly-field>
     <sly-field title="Human masks"
-               description="Human eye friendly segmentation mask">
+               description="Semantic segmentation RGB masks with colors of classes. (0, 0, 0) is for background (unlabeled area). ">
         <el-checkbox v-model="state.humanMasks">enable</el-checkbox>
     </sly-field>
     <sly-field title="Machine masks"
-               description="Segmentation masks for AI">
+               description="Additional RGB masks for NN where colors are the indices of classes">
         <el-checkbox v-model="state.machineMasks">enable</el-checkbox>
     </sly-field>
 </div>
