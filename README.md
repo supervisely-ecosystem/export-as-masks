@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/HoCitpi.png"/>
+<img src="https://i.imgur.com/4etyw66.png"/>
 
 
 # Export only labeled items
@@ -20,14 +20,30 @@
 
 ## Overview
 
-Application exports images, annotations and masks from [Supervisely](https://app.supervise.ly) project and prepares downloadable `.tar` archive.
+Application exports images, annotations, human and machine masks from [Supervisely](https://app.supervise.ly) project and prepares downloadable `.tar` archive. Human mask is an RGB mask with classes colors (semantic segementation). Classes colors for machine mask are generated automatically for class indices as pixel colors, 
+e.g:
+```text
+{
+  "kiwi": [
+    1,
+    1,
+    1
+  ],
+  "lemon": [
+    2,
+    2,
+    2
+  ]
+}
+```
+Color map for machine masks is saved to `obj_class_to_machine_color.json` file.
 
 ## How To Run 
 **Step 1**: Add app to your team from [Ecosystem](https://app.supervise.ly/apps/ecosystem/export-as-masks) if it is not there.
 
 **Step 2**: Open context menu of project -> `Download via App` -> `Export as masks` 
 
-<img src="https://i.imgur.com/UpAfhLU.png" width="400"/>
+<img src="https://i.imgur.com/IcceeId.png" width="500"/>
 
 **Step 3**: Select the project export options.
 
