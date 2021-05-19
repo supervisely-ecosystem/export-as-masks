@@ -79,7 +79,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     app_logger.info("Result directory is archived")
 
     upload_progress = []
-    remote_archive_path = "/Export-as-masks/{}/{}".format(task_id, full_archive_name)
+    remote_archive_path = "/Export-as-masks/{}_{}".format(task_id, full_archive_name)
 
 
     def _print_progress(monitor, upload_progress):
