@@ -18,7 +18,10 @@
   "icon_background": "#FFFFFF",
   "headless": true,
   "context_menu": {
-    "target": ["images_project"],
+    "target": [
+      "images_project"
+    ],
     "context_root": "Download as"
-  }
+  },
+  "poster": "https://i.imgur.com/nJGEa4m.png"
 }
