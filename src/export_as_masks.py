@@ -1,8 +1,9 @@
 import os
 import numpy as np
-import supervisely_lib as sly
-from supervisely_lib.io.json import dump_json_file
+import supervisely as sly
+from supervisely.io.json import dump_json_file
 from PIL import Image
+from supervisely.app.v1.app_service import AppService
 
 from distutils.util import strtobool
 
@@ -11,7 +12,7 @@ TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
 PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 
-my_app = sly.AppService()
+my_app = AppService()
 
 Image.MAX_IMAGE_PIXELS = None
 HUMAN_MASKS = bool(strtobool(os.environ['modal.state.humanMasks']))
@@ -27,7 +28,8 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     sly.logger.info('DOWNLOAD_PROJECT', extra={'title': project_info.name})
     dest_dir = os.path.join(my_app.data_dir, f'{project_info.id}_{project_info.name}')
     sly.download_project(api, project_info.id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
-    sly.logger.info('Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
+    sly.logger.info(
+        'Project {!r} has been successfully downloaded. Starting to render masks.'.format(project_info.name))
 
     if MACHINE_MASKS is True or HUMAN_MASKS is True:
         project = sly.Project(directory=dest_dir, mode=sly.OpenMode.READ)
@@ -60,14 +62,16 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                                             color=label.obj_class.color,
                                             config=label.obj_class.geometry_config,
                                             thickness=THICKNESS)
-                    raw_img_rendered = ((raw_img_rendered.astype(np.uint16) + raw_img.astype(np.uint16)) / 2).astype(np.uint8)
+                    raw_img_rendered = ((raw_img_rendered.astype(np.uint16) + raw_img.astype(np.uint16)) / 2).astype(
+                        np.uint8)
                     sly.image.write(os.path.join(human_masks_dir, mask_img_name),
                                     np.concatenate([raw_img, raw_img_rendered], axis=1))
 
                 if MACHINE_MASKS is True:
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
                     for label in ann.labels:
-                        label.geometry.draw(machine_mask, color=machine_colors[label.obj_class.name], thickness=THICKNESS)
+                        label.geometry.draw(machine_mask, color=machine_colors[label.obj_class.name],
+                                            thickness=THICKNESS)
                     sly.image.write(os.path.join(machine_masks_dir, mask_img_name), machine_mask)
 
                     ds_progress.iter_done_report()
@@ -79,8 +83,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     app_logger.info("Result directory is archived")
 
     upload_progress = []
-    remote_archive_path = "/Export-as-masks/{}_{}".format(task_id, full_archive_name)
-
+    remote_archive_path = f"/Export-as-masks/{task_id}_{full_archive_name}"
 
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
@@ -92,8 +95,9 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
 
     file_info = api.file.upload(TEAM_ID, result_archive, remote_archive_path,
                                 lambda m: _print_progress(m, upload_progress))
-    app_logger.info("Uploaded to Team-Files: {!r}".format(file_info.full_storage_url))
-    api.task.set_output_archive(task_id, file_info.id, full_archive_name, file_url=file_info.full_storage_url)
+    app_logger.info("Uploaded to Team-Files: {!r}".format(file_info.storage_path))
+    api.task.set_output_archive(task_id=task_id, file_id=file_info.id, file_name=full_archive_name,
+                                file_url=file_info.storage_path)
 
     my_app.stop()
 
