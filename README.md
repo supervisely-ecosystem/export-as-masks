@@ -22,7 +22,9 @@ Export prepares downloadable `.tar` archive, that contains:
 - original images
 - annotations in [Supervisely JSON format](https://docs.supervise.ly/data-organization/00_ann_format_navi)
 - human masks - RGB masks where every pixel has the color of the corresponding class (semantic segmentation)
-- machine masks. Notice: if you open machine mask image in standart image viewer, it will look like completely black image, but it is not. Classes colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1,  (2, 2, 2) - for class #2, and etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file. For example:   
+- machine masks. Notice: if you open machine mask image in standart image viewer, it will look like completely black image, but it is not. Classes colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1,  (2, 2, 2) - for class #2, and etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file. 
+
+For example:   
 
 ```json
 {
@@ -37,6 +39,46 @@ Export prepares downloadable `.tar` archive, that contains:
     2
   ]
 }
+```
+
+Output example:
+
+```text
+<id_project_name>.tar
+├── cat
+│   ├── ann
+│   │   ├── cats_1.jpg.json
+│   │   ├── ...
+│   │   └── cats_9.jpg.json
+│   ├── img
+│   │   ├── cats_1.jpg
+│   │   ├── ...
+│   │   └── cats_9.jpg
+│   ├── masks_human
+│   │   ├── cats_1.png
+│   │   ├── ...
+│   │   └── cats_9.png
+│   └── masks_machine
+│       ├── cats_1.png
+│       ├── ...
+│       └── cats_9.png
+└── dog
+    ├── ann
+    │   ├── dogs_1.jpg.json
+    │   ├── ...
+    │   └── dogs_9.jpg.json
+    ├── img
+    │   ├── dogs_1.jpg
+    │   ├── ...
+    │   └── dogs_9.jpg
+    ├── masks_human
+    │   ├── dogs_1.png
+    │   ├── ...
+    │   └── dogs_9.png
+    └── masks_machine
+        ├── dogs_1.png
+        ├── ...
+        └── dogs_9.png
 ```
 
 ## How To Run 
