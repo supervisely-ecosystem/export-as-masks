@@ -13,9 +13,9 @@ print(f"App root directory: {app_root_directory}")
 sly.logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
 # order matters
-from dotenv import load_dotenv
-load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
-load_dotenv(os.path.join(app_root_directory, "debug.env"))
+# from dotenv import load_dotenv
+# load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
+# load_dotenv(os.path.join(app_root_directory, "debug.env"))
 
 TASK_ID = os.environ["TASK_ID"]
 TEAM_ID = int(os.environ["context.teamId"])
