@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://i.imgur.com/nJGEa4m.png"/>
+<img src="https://user-images.githubusercontent.com/48913536/181039544-eb60061b-acfe-4706-8026-f9cace924411.png"/>
 
 # Export As Masks
 
@@ -111,7 +111,7 @@ Output example:
 
 **Step 3**: Define export settings in modal window
 
-<img src="https://i.imgur.com/T9uHAfl.png" width="400"/>
+<img src="https://user-images.githubusercontent.com/48913536/181037292-4e88f6af-c4e7-4575-9f29-ac8984a70cd0.png" width="400"/>
 
 **Step 4**: Result archive will be available for download in `Tasks` list (image below) or from `Team Files` (path format is the following `Team Files`->`Export-as-masks`->`<task_id>_<projectId>_<projectName>.tar`)
 
