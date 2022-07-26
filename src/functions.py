@@ -1,6 +1,7 @@
 import os
 
 import supervisely as sly
+from PIL import Image
 
 import globals as g
 
@@ -56,3 +57,9 @@ def upload_result_archive(
         file_name=full_archive_name,
         file_url=file_info.storage_path,
     )
+
+
+def convert2gray_and_save(mask_path, mask):
+    sly.image.write(mask_path, mask)
+    img = Image.open(mask_path).convert("L")
+    img.save(mask_path)

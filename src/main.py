@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import supervisely as sly
-from PIL import Image
 from supervisely._utils import generate_free_name
 from supervisely.io.json import dump_json_file
 
@@ -81,9 +80,8 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                             color=machine_colors[label.obj_class.name],
                             thickness=g.THICKNESS,
                         )
-                    sly.image.write(
-                        os.path.join(machine_masks_dir, mask_img_name), machine_mask
-                    )
+                    machine_mask_path = os.path.join(machine_masks_dir, mask_img_name)
+                    f.convert2gray_and_save(machine_mask_path, machine_mask)
 
                 if g.INSTANCE_MASKS:
                     used_names = []
@@ -107,9 +105,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                         label.geometry.draw(
                             instance_mask, color=[255, 255, 255], thickness=g.THICKNESS
                         )
-                        sly.image.write(instance_mask_path, instance_mask)
-                        img = Image.open(instance_mask_path).convert("L")
-                        img.save(instance_mask_path)
+                        f.convert2gray_and_save(instance_mask_path, instance_mask)
 
                     ds_progress.iter_done_report()
         sly.logger.info("Finished masks rendering.".format(project_info.name))
