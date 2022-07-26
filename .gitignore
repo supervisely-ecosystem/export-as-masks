@@ -1,4 +1,4 @@
-secret_degub.env
+secret_debug.env
 src/debug
 debug
 .idea
