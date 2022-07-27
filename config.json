@@ -5,14 +5,15 @@
     "images",
     "export"
   ],
-  "description": "For semantic segmentation task",
+  "description": "For semantic and instance segmentation tasks",
   "docker_image": "supervisely/base-py-sdk:6.35.0",
   "instance_version": "6.5.1",
-  "main_script": "src/export_as_masks.py",
+  "main_script": "src/main.py",
   "modal_template": "src/modal.html",
   "modal_template_state": {
     "humanMasks": true,
     "machineMasks": true,
+    "instanceMasks": false,
     "thickness": 2
   },
   "task_location": "workspace_tasks",
