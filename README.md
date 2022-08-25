@@ -1,5 +1,5 @@
 <div align="center" markdown>
-<img src="https://user-images.githubusercontent.com/48913536/181039544-eb60061b-acfe-4706-8026-f9cace924411.png"/>
+<img src="https://user-images.githubusercontent.com/106374579/186664538-21e06509-7372-44db-9f0e-512be05cad91.png"/>
 
 # Export As Masks
 
