@@ -27,7 +27,7 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
 
     upload_progress = []
     remote_archive_path = os.path.join(
-        sly.team_files.RECOMMENDED_EXPORT_PATH + f"/Export-as-masks/{task_id}_{full_archive_name}"
+        sly.team_files.RECOMMENDED_EXPORT_PATH, f"Export-as-masks/{task_id}_{full_archive_name}"
     )
 
     def _print_progress(monitor, upload_progress):
