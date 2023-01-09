@@ -10,9 +10,7 @@ def download_project(api, project_name, project_id):
     dataset_ids = [ds.id for ds in api.dataset.get_list(g.PROJECT_ID)]
     sly.logger.info("DOWNLOAD_PROJECT", extra={"title": project_name})
     dest_dir = os.path.join(g.STORAGE_DIR, f"{project_id}_{project_name}")
-    sly.download_project(
-        api, project_id, dest_dir, dataset_ids=dataset_ids, log_progress=True
-    )
+    sly.download_project(api, project_id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
     sly.logger.info(
         "Project {!r} has been successfully downloaded. Starting to render masks.".format(
             project_name
@@ -21,16 +19,16 @@ def download_project(api, project_name, project_id):
     return dest_dir
 
 
-def upload_result_archive(
-    api, task_id, project_id, project_name, project_dir, app_logger
-):
+def upload_result_archive(api, task_id, project_id, project_name, project_dir, app_logger):
     full_archive_name = str(project_id) + "_" + project_name + ".tar"
     result_archive = os.path.join(g.my_app.data_dir, full_archive_name)
     sly.fs.archive_directory(project_dir, result_archive)
     app_logger.info("Result directory is archived")
 
     upload_progress = []
-    remote_archive_path = f"/Export-as-masks/{task_id}_{full_archive_name}"
+    remote_archive_path = os.path.join(
+        sly.team_files.RECOMMENDED_EXPORT_PATH, f"export-as-masks/{task_id}_{full_archive_name}"
+    )
 
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:

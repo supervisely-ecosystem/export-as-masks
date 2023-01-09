@@ -1,12 +1,9 @@
 {
   "name": "Export as masks",
   "type": "app",
-  "categories": [
-    "images",
-    "export"
-  ],
+  "categories": ["images", "export"],
   "description": "For semantic and instance segmentation tasks",
-  "docker_image": "supervisely/base-py-sdk:6.68.66",
+  "docker_image": "supervisely/base-py-sdk:6.68.95",
   "instance_version": "6.5.1",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
@@ -21,9 +18,7 @@
   "icon_background": "#FFFFFF",
   "headless": true,
   "context_menu": {
-    "target": [
-      "images_project"
-    ],
+    "target": ["images_project"],
     "context_root": "Download as"
   },
   "poster": "https://user-images.githubusercontent.com/106374579/186664538-21e06509-7372-44db-9f0e-512be05cad91.png"
