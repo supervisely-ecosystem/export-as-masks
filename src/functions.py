@@ -4,9 +4,6 @@ import supervisely as sly
 from PIL import Image
 
 import globals as g
-from supervisely import team_files
-
-temp_path = team_files.RECOMMENDED_EXPORT_PATH
 
 
 def download_project(api, project_name, project_id):
@@ -29,7 +26,9 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
     app_logger.info("Result directory is archived")
 
     upload_progress = []
-    remote_archive_path = temp_path + f"/Export-as-masks/{task_id}_{full_archive_name}"
+    remote_archive_path = os.path.join(
+        sly.team_files.RECOMMENDED_EXPORT_PATH + f"/Export-as-masks/{task_id}_{full_archive_name}"
+    )
 
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
