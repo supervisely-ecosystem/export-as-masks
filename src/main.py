@@ -14,9 +14,6 @@ if sly.is_development():
     load_dotenv("local.env")
     load_dotenv(os.path.expanduser("~/supervisely.env"))
 
-
-api = sly.Api.from_env()
-
 Image.MAX_IMAGE_PIXELS = None
 HUMAN_MASKS = bool(strtobool(os.environ["modal.state.humanMasks"]))
 MACHINE_MASKS = bool(strtobool(os.environ["modal.state.machineMasks"]))
@@ -24,7 +21,6 @@ INSTANCE_MASKS = bool(strtobool(os.environ["modal.state.instanceMasks"]))
 THICKNESS = int(os.environ["modal.state.thickness"])
 
 STORAGE_DIR = sly.app.get_data_dir()
-app_name = "export-as-masks"
 
 
 def download_project(api, project_name, project_id):
@@ -48,6 +44,8 @@ def convert2gray_and_save(mask_path, mask):
 
 class MyExport(sly.app.Export):
     def process(self, context: sly.app.Export.Context):
+
+        api = sly.Api.from_env()
 
         project_info = context.project
         project_dir = download_project(api, project_info.name, project_info.id)
@@ -149,7 +147,7 @@ class MyExport(sly.app.Export):
         sly.fs.archive_directory(project_dir, result_archive)
         sly.logger.info("Result directory is archived")
 
-        return result_archive, app_name
+        return result_archive
 
 
 app = MyExport()
