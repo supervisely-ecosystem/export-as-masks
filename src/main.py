@@ -21,7 +21,6 @@ INSTANCE_MASKS = bool(strtobool(os.environ["modal.state.instanceMasks"]))
 THICKNESS = int(os.environ["modal.state.thickness"])
 
 STORAGE_DIR = sly.app.get_data_dir()
-app_name = "export-as-masks"
 
 
 def download_project(api, project_name, project_id):
@@ -147,7 +146,7 @@ class MyExport(sly.app.Export):
         sly.fs.archive_directory(project_dir, result_archive)
         sly.logger.info("Result directory is archived")
 
-        return result_archive, app_name
+        return result_archive
 
 
 app = MyExport()
