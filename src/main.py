@@ -6,6 +6,7 @@ from supervisely._utils import generate_free_name
 from supervisely.io.json import dump_json_file
 from distutils.util import strtobool
 from PIL import Image
+from os.path import join
 
 from dotenv import load_dotenv
 
@@ -23,17 +24,12 @@ THICKNESS = int(os.environ["modal.state.thickness"])
 STORAGE_DIR = sly.app.get_data_dir()
 
 
-def download_project(api, project_name, project_id):
-    dataset_ids = [ds.id for ds in api.dataset.get_list(project_id)]
-    sly.logger.info("DOWNLOAD_PROJECT", extra={"title": project_name})
-    dest_dir = os.path.join(STORAGE_DIR, f"{project_id}_{project_name}")
-    sly.download_project(api, project_id, dest_dir, dataset_ids=dataset_ids, log_progress=True)
-    sly.logger.info(
-        "Project {!r} has been successfully downloaded. Starting to render masks.".format(
-            project_name
-        )
-    )
-    return dest_dir
+def download_project(api, project_name, project_id, dataset_id):
+    dataset_ids = [dataset_id] if dataset_id is not None else None
+    project_dir = join(STORAGE_DIR, f"{project_id}_{project_name}")
+    sly.download_project(api, project_id, project_dir, dataset_ids=dataset_ids, log_progress=True)
+    sly.logger.info(f"Project: '{project_name}' has been successfully downloaded.")
+    return project_dir
 
 
 def convert2gray_and_save(mask_path, mask):
@@ -47,7 +43,7 @@ class MyExport(sly.app.Export):
 
         api = sly.Api.from_env()
         project_info = api.project.get_info_by_id(id=context.project_id)
-        project_dir = download_project(api, project_info.name, project_info.id)
+        project_dir = download_project(api, project_info.name, project_info.id, context.dataset_id)
 
         if MACHINE_MASKS or HUMAN_MASKS or INSTANCE_MASKS:
             project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
