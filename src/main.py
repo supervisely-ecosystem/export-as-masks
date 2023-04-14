@@ -1,5 +1,7 @@
 import os
 
+import cv2
+
 import numpy as np
 import supervisely as sly
 from supervisely._utils import generate_free_name
@@ -54,23 +56,25 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                 mask_img_name = f"{os.path.splitext(item_name)[0]}.png"
 
                 raw_img = sly.image.read(item_paths.img_path)
-                raw_img_rendered = raw_img.copy()
-                if g.HUMAN_MASKS:
-                    for label in ann.labels:
-                        label.geometry.draw(
-                            raw_img_rendered,
-                            color=label.obj_class.color,
-                            config=label.obj_class.geometry_config,
-                            thickness=g.THICKNESS,
-                        )
-                    raw_img_rendered = (
-                        (raw_img_rendered.astype(np.uint16) + raw_img.astype(np.uint16))
-                        / 2
-                    ).astype(np.uint8)
-                    sly.image.write(
-                        os.path.join(human_masks_dir, mask_img_name),
-                        np.concatenate([raw_img, raw_img_rendered], axis=1),
+                overlay = raw_img.copy()
+
+                for label in ann.labels:
+                    temp_overlay = overlay.copy()
+                    label.geometry.draw(
+                        temp_overlay,
+                        color=label.obj_class.color,
+                        config=label.obj_class.geometry_config,
+                        thickness=g.THICKNESS,
                     )
+
+                    overlay = (
+                        (overlay.astype(np.uint16) + temp_overlay.astype(np.uint16)) / 2
+                    ).astype(np.uint8)
+
+                sly.image.write(
+                    os.path.join(human_masks_dir, mask_img_name),
+                    np.concatenate([raw_img, overlay], axis=1),
+                )
 
                 if g.MACHINE_MASKS:
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
