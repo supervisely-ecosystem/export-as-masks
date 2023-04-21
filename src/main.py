@@ -78,7 +78,12 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
 
                 if g.MACHINE_MASKS:
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
-                    for label in ann.labels:
+
+                    sorted_labels = sorted(
+                        ann.labels, key=lambda x: x.area, reverse=True
+                    )
+
+                    for label in sorted_labels:
                         label.geometry.draw(
                             machine_mask,
                             color=machine_colors[label.obj_class.name],
