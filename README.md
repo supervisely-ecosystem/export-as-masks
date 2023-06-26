@@ -107,13 +107,13 @@ Output example:
 
 **Step 2**: Open context menu of images project -> `Download via App` -> `Export as masks` 
 
-<img src="https://i.imgur.com/IcceeId.png" width="500"/>
+<img src="media/htr2.png" width="500"/>
 
 **Step 3**: Define export settings in modal window
 
-<img src="https://user-images.githubusercontent.com/48913536/181037292-4e88f6af-c4e7-4575-9f29-ac8984a70cd0.png" width="400"/>
+<img src="media/htr3.png" width="400"/>
 
 **Step 4**: Result archive will be available for download in `Tasks` list (image below) or from `Team Files` (path format is the following `Team Files`->`Export-as-masks`->`<task_id>_<projectId>_<projectName>.tar`)
 
-<img src="https://i.imgur.com/hibPn9b.png"/>
+<img src="media/htr4.png"/>
 
