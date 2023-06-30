@@ -1,3 +1,0 @@
-supervisely==6.68.109
-numpy>=1.19.4
-Pillow>=8.0.1
