@@ -15,6 +15,7 @@ import globals as g
 @sly.timeit
 def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
     project_info = api.project.get_info_by_id(g.PROJECT_ID)
+    api.dataset.get_list(g.PROJECT_ID)
     project_dir = f.download_project(api, project_info.name, project_info.id)
 
     if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS:
