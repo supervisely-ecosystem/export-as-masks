@@ -82,10 +82,25 @@ def download_project(api, project_name, project_id):
     return dest_dir
 
 
+def get_directory_size(directory):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(directory):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+    return total_size
+
+
 def upload_result_archive(api, task_id, project_id, project_name, project_dir, app_logger):
     full_archive_name = str(project_id) + "_" + project_name + ".tar"
     result_archive = os.path.join(g.my_app.data_dir, full_archive_name)
-    sly.fs.archive_directory(project_dir, result_archive)
+    dir_size = get_directory_size(project_dir)
+    split = None
+    if dir_size > g.SPLIT_SIZE_BYTES:
+        app_logger.info(f"Result archive will be divided into parts by {g.SPLIT_SIZE} {g.SPLIT_MODE} each")
+        split = f"{g.SPLIT_SIZE}{g.SPLIT_MODE}"
+    sly.fs.archive_directory(project_dir, result_archive, split=split)
     app_logger.info("Result directory is archived")
 
     upload_progress = []
