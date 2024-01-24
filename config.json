@@ -6,15 +6,17 @@
         "export"
     ],
     "description": "For semantic and instance segmentation tasks",
-    "docker_image": "supervisely/import-export:6.72.216",
-    "instance_version": "6.8.48",
+    "docker_image": "supervisely/import-export:6.73.4",
+    "instance_version": "6.8.73",
     "main_script": "src/main.py",
     "modal_template": "src/modal.html",
     "modal_template_state": {
         "humanMasks": true,
         "machineMasks": true,
         "instanceMasks": false,
-        "thickness": 2
+        "thickness": 2,
+        "splitMode": "GB",
+        "splitSize": 1
     },
     "task_location": "workspace_tasks",
     "icon": "https://i.imgur.com/Dz0f248.png",
