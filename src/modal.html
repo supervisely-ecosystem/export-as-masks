@@ -16,7 +16,7 @@
         <el-checkbox v-model="state.instanceMasks">enable</el-checkbox>
     </sly-field>
     <sly-field title="Split result archive into parts"
-               description="Split result archive into parts with given size (in MB/GB)">
+               description="If the size of the result archive exceeds the specified value, it will be split into several parts">
       <div class="fflex">
         <el-input-number
             v-model="state.splitSize"
