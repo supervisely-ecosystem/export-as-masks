@@ -147,4 +147,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sly.main_wrapper("main", main, log_for_agent=False)
