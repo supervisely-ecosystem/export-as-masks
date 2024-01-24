@@ -28,7 +28,7 @@
             class="ml10"
             size="mini"
             v-model="state.splitMode"
-            @change="() => state.splitMode === 'GB' ? state.splitSize = 1 : state.splitSize = 100"
+            @change="() => state.splitMode === 'GB' ? state.splitSize = 10 : state.splitSize = 100"
         >
             <el-radio-button label="MB">MB</el-radio-button>
             <el-radio-button label="GB">GB</el-radio-button>
