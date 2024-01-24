@@ -3,6 +3,7 @@ import sys
 from distutils.util import strtobool
 
 import supervisely as sly
+from dotenv import load_dotenv
 
 
 from PIL import Image
@@ -14,10 +15,9 @@ sys.path.append(os.path.join(app_root_directory, "src"))
 print(f"App root directory: {app_root_directory}")
 sly.logger.info(f'PYTHONPATH={os.environ.get("PYTHONPATH", "")}')
 
-# order matters
-# from dotenv import load_dotenv
-# load_dotenv(os.path.join(app_root_directory, "secret_debug.env"))
-# load_dotenv(os.path.join(app_root_directory, "debug.env"))
+if sly.is_development():
+    load_dotenv("local.env")
+    load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 TASK_ID = os.environ["TASK_ID"]
 TEAM_ID = int(os.environ["context.teamId"])
@@ -32,4 +32,14 @@ MACHINE_MASKS = bool(strtobool(os.environ["modal.state.machineMasks"]))
 INSTANCE_MASKS = bool(strtobool(os.environ["modal.state.instanceMasks"]))
 THICKNESS = int(os.environ["modal.state.thickness"])
 
-STORAGE_DIR = my_app.data_dir
+SPLIT_MODE = os.environ.get("modal.state.splitMode", "GB")
+SPLIT_SIZE = int(os.environ.get("modal.state.splitSize", 1))
+SPLIT_SIZE_BYTES = 1 * 1024 * 1024 * 1024 # by default 1 GB
+if SPLIT_MODE == "GB":
+    SPLIT_SIZE_BYTES = SPLIT_SIZE * 1024 * 1024 * 1024
+elif SPLIT_MODE == "MB":
+    SPLIT_SIZE_BYTES = SPLIT_SIZE * 1024 * 1024
+
+STORAGE_DIR = sly.app.get_data_dir()
+if sly.fs.dir_exists(STORAGE_DIR):
+    sly.fs.clean_dir(STORAGE_DIR)

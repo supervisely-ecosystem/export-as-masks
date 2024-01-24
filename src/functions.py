@@ -2,6 +2,7 @@ import os
 import time
 
 import supervisely as sly
+from supervisely.team_files import RECOMMENDED_EXPORT_PATH
 from PIL import Image
 
 import globals as g
@@ -82,22 +83,41 @@ def download_project(api, project_name, project_id):
     return dest_dir
 
 
+def get_directory_size(directory):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(directory):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+    return total_size
+
+
 def upload_result_archive(api, task_id, project_id, project_name, project_dir, app_logger):
-    full_archive_name = str(project_id) + "_" + project_name + ".tar"
-    result_archive = os.path.join(g.my_app.data_dir, full_archive_name)
-    sly.fs.archive_directory(project_dir, result_archive)
-    app_logger.info("Result directory is archived")
+    archive_name = str(project_id) + "_" + project_name + ".tar"
+    result_dir_path = os.path.join(g.my_app.data_dir, f"{task_id}")
+    sly.fs.mkdir(result_dir_path, remove_content_if_exists=True)
+    result_archive = os.path.join(result_dir_path, archive_name)
+    dir_size = get_directory_size(project_dir)
+    split = None
+    if dir_size > g.SPLIT_SIZE_BYTES:
+        app_logger.info(f"Result archive will be divided into parts by {g.SPLIT_SIZE} {g.SPLIT_MODE} each")
+        split = f"{g.SPLIT_SIZE}{g.SPLIT_MODE}"
+    splits = sly.fs.archive_directory(project_dir, result_archive, split=split)
+    app_logger.info(f"Result directory is archived {'with splitting' if splits else ''}")
+
+    remote_path = os.path.join(RECOMMENDED_EXPORT_PATH, "export-as-masks", f"{task_id}")
+    if splits is None:
+        remote_path = os.path.join(remote_path, archive_name)
 
     upload_progress = []
-    remote_archive_path = os.path.join(
-        sly.team_files.RECOMMENDED_EXPORT_PATH, f"export-as-masks/{task_id}_{full_archive_name}"
-    )
+    upload_msg = f"Uploading{' splitted' if splits else ''} archive {archive_name} to Team Files"
 
     def _print_progress(monitor, upload_progress):
         if len(upload_progress) == 0:
             upload_progress.append(
                 sly.Progress(
-                    message="Upload {!r}".format(full_archive_name),
+                    message=upload_msg,
                     total_cnt=monitor.len,
                     ext_logger=app_logger,
                     is_size=True,
@@ -105,19 +125,36 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
             )
         upload_progress[0].set_current_value(monitor.bytes_read)
 
-    file_info = api.file.upload(
-        g.TEAM_ID,
-        result_archive,
-        remote_archive_path,
-        lambda m: _print_progress(m, upload_progress),
-    )
-    app_logger.info("Uploaded to Team-Files: {!r}".format(file_info.storage_path))
-    api.task.set_output_archive(
-        task_id=task_id,
-        file_id=file_info.id,
-        file_name=full_archive_name,
-        file_url=file_info.storage_path,
-    )
+    if splits:
+        res_remote_dir = api.file.upload_directory(
+            g.TEAM_ID,
+            result_dir_path,
+            remote_path,
+            progress_size_cb=lambda m: _print_progress(m, upload_progress),
+        )
+        main_part_name = os.path.basename(splits[0])
+        main_part = os.path.join(res_remote_dir, main_part_name)
+        file_info = api.file.get_info_by_path(g.TEAM_ID, main_part)
+        api.task.set_output_directory(
+            task_id=task_id,
+            file_id=file_info.id,
+            directory_path=res_remote_dir
+        )
+        app_logger.info(f"Uploaded to Team-Files: {res_remote_dir}")
+    else:
+        file_info = api.file.upload(
+            g.TEAM_ID,
+            result_archive,
+            remote_path,
+            lambda m: _print_progress(m, upload_progress),
+        )
+        api.task.set_output_archive(
+            task_id=task_id,
+            file_id=file_info.id,
+            file_name=archive_name,
+            file_url=file_info.storage_path,
+        )
+        app_logger.info(f"Uploaded to Team-Files: {file_info.path}")
 
 
 def convert2gray_and_save(mask_path, mask):
