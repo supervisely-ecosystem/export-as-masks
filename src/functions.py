@@ -104,9 +104,9 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
         app_logger.info(f"Result archive will be divided into parts by {g.SPLIT_SIZE} {g.SPLIT_MODE} each")
         split = f"{g.SPLIT_SIZE}{g.SPLIT_MODE}"
     splits = sly.fs.archive_directory(project_dir, result_archive, split=split)
-    app_logger.info("Result directory is archived")
+    app_logger.info(f"Result directory is archived {'with splitting' if splits else ''}")
 
-    remote_path = os.path.join(RECOMMENDED_EXPORT_PATH, "export-as-masks" f"{task_id}")
+    remote_path = os.path.join(RECOMMENDED_EXPORT_PATH, "export-as-masks", f"{task_id}")
     if splits is None:
         remote_path = os.path.join(remote_path, archive_name)
 
@@ -132,7 +132,8 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
             remote_path,
             progress_size_cb=lambda m: _print_progress(m, upload_progress),
         )
-        main_part = os.path.join(res_remote_dir, archive_name)
+        main_part_name = os.path.basename(splits[0])
+        main_part = os.path.join(res_remote_dir, main_part_name)
         file_info = api.file.get_info_by_path(g.TEAM_ID, main_part)
         api.task.set_output_directory(
             task_id=task_id,
