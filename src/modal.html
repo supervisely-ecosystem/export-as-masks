@@ -15,4 +15,24 @@
                description="Creates additional masks for every object">
         <el-checkbox v-model="state.instanceMasks">enable</el-checkbox>
     </sly-field>
+    <sly-field title="Split result archive into parts"
+               description="Split result archive into parts with given size (in MB/GB)">
+      <div class="fflex">
+        <el-input-number
+            v-model="state.splitSize"
+            size="small"
+            :min="state.splitMode === 'GB' ? 1 : 100"
+            :max="state.splitMode === 'GB' ? 10 : 1024"
+        ></el-input-number>
+        <el-radio-group
+            class="ml10"
+            size="mini"
+            v-model="state.splitMode"
+            @change="() => state.splitMode === 'GB' ? state.splitSize = 1 : state.splitSize = 100"
+        >
+            <el-radio-button label="MB">MB</el-radio-button>
+            <el-radio-button label="GB">GB</el-radio-button>
+        </el-radio-group>
+      </div>
+    </sly-field>
 </div>
