@@ -136,7 +136,7 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
         file_info = api.file.get_info_by_path(g.TEAM_ID, main_part)
         api.task.set_output_directory(
             task_id=task_id,
-            file_info=file_info,
+            file_id=file_info.id,
             directory_path=res_remote_dir
         )
         app_logger.info(f"Uploaded to Team-Files: {res_remote_dir}")
