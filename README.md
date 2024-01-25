@@ -133,5 +133,5 @@ In the case of a split archive:
 
 ```bash
 cd <path_to_folder_with_archive_parts>
-cat <projectId>\_<projectName>.tar\* | tar --options read_concatenated_archives -xvf -
+cat <projectId>_<projectName>.tar* | tar --options read_concatenated_archives -xvf -
 ```
