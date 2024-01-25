@@ -120,10 +120,10 @@ Output example:
 
 ### How to extract split archives
 
-In case of a split archive:
+In the case of a split archive:
 
 1. download all parts from `Team Files` directory (`Team Files`->`Export-as-masks`->`<task_id>`->`<projectId>_<projectName>_part_<part_number>.tar`)
-2. After downloading all archive parts, you can extract it:
+2. After downloading all archive parts, you can extract them:
 
 - for Windows:
 
@@ -131,5 +131,11 @@ In case of a split archive:
 
 - for Linux/MacOS:
 
-  3. open the terminal and navigate to the directory with downloaded archive parts (e.g. `cd ~/Downloads/123456`)
-  4. use the following command `cat <projectId>_<projectName>.tar* | tar --options read_concatenated_archives -xvf -`
+  3. open the terminal and navigate to the directory with downloaded archive parts 
+    ```bash
+cd ~/Downloads/<folder_with_archive_parts>
+    ```
+  4. use the following command
+    ```bash
+cat <projectId>_<projectName>.tar* | tar --options read_concatenated_archives -xvf -
+    ```
