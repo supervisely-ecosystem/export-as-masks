@@ -19,26 +19,21 @@
 ## Overview
 
 Export prepares downloadable `.tar` archive, that contains:
+
 - original images
 - annotations in [Supervisely JSON format](https://docs.supervise.ly/data-organization/00_ann_format_navi)
 - human masks - RGB masks where every pixel has the color of the corresponding class (semantic segmentation)
-- machine masks. Notice: if you open machine mask image in standard image viewer, it will look like completely black image, but it is not. Class colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1,  (2, 2, 2) - for class #2, etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file. 
+- machine masks. Notice: if you open machine mask image in standard image viewer, it will look like completely black image, but it is not. Class colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1, (2, 2, 2) - for class #2, etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file.
 - instance masks - BW masks for every object on the image (instance segmentation)
 
-For example:   
+🏋️ Starting from version v2.1.11 application supports split archives. If the archive file size is too big, it will be split into several parts. Learn more on how to extract split archives [here](#how-to-extract-split-archives).
+
+For example:
 
 ```json
 {
-  "kiwi": [
-    1,
-    1,
-    1
-  ],
-  "lemon": [
-    2,
-    2,
-    2
-  ]
+  "kiwi": [1, 1, 1],
+  "lemon": [2, 2, 2]
 }
 ```
 
@@ -102,10 +97,11 @@ Output example:
         └── dogs_9.png
 ```
 
-## How To Run 
+## How To Run
+
 **Step 1**: Add app to your team from [Ecosystem](https://app.supervise.ly/apps/ecosystem/export-as-masks) if it is not there
 
-**Step 2**: Open context menu of images project -> `Download via App` -> `Export as masks` 
+**Step 2**: Open context menu of images project -> `Download via App` -> `Export as masks`
 
 <img src="https://i.imgur.com/IcceeId.png" width="500"/>
 
@@ -113,7 +109,27 @@ Output example:
 
 <img src="https://user-images.githubusercontent.com/48913536/181037292-4e88f6af-c4e7-4575-9f29-ac8984a70cd0.png" width="400"/>
 
-**Step 4**: Result archive will be available for download in `Tasks` list (image below) or from `Team Files` (path format is the following `Team Files`->`Export-as-masks`->`<task_id>_<projectId>_<projectName>.tar`)
+**Step 4**: Result archive will be available for download:
+
+- single archive: in the **Tasks list** (image below) or from **Team Files**
+  - `Team Files`->`Export-as-masks`->`task_id`->`<projectId>_<projectName>.tar`
+- split archive: all parts will be stored in the **Team Files** directory
+  - `Team Files`->`Export-as-masks`->`<task_id>`->`<projectId>_<projectName>_part_<part_number>.tar`
 
 <img src="https://i.imgur.com/hibPn9b.png"/>
 
+### How to extract split archives
+
+In case of a split archive:
+
+1. download all parts from `Team Files` directory (`Team Files`->`Export-as-masks`->`<task_id>`->`<projectId>_<projectName>_part_<part_number>.tar`)
+2. After downloading all archive parts, you can extract it:
+
+- for Windows:
+
+  3. Use the following freeware to unpack Multi-Tar files: [7-zip](https://www.7-zip.org/) and click on the first file (with extension `.tar.001`)
+
+- for Linux/MacOS:
+
+  3. open the terminal and navigate to the directory with downloaded archive parts (e.g. `cd ~/Downloads/123456`)
+  4. use the following command `cat <projectId>_<projectName>.tar* | tar --options read_concatenated_archives -xvf -`
