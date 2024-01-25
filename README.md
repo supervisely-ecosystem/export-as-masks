@@ -128,10 +128,18 @@ In the case of a split archive:
 - for Windows:
   use the following freeware to unpack Multi-Tar files: [7-zip](https://www.7-zip.org/) and click on the first file (with extension `.tar.001`)
 
-- for Linux/MacOS:
+- for MacOS:
   replace `<path_to_folder_with_archive_parts>`, `<projectId>` and `<projectName>` with your values and run the following commands in the terminal:
 
 ```bash
 cd <path_to_folder_with_archive_parts>
 cat <projectId>_<projectName>.tar* | tar --options read_concatenated_archives -xvf -
+```
+
+- for Linux (Ubuntu):
+  replace `<path_to_folder_with_archive_parts>`, `<projectId>` and `<projectName>` with your values and run the following commands in the terminal:
+
+```bash
+cd <path_to_folder_with_archive_parts>
+cat '<projectId>_<projectName>.tar'* > result_archives.tar | tar -xvf concatenated_archives.tar
 ```
