@@ -6,7 +6,7 @@
         "export"
     ],
     "description": "For semantic and instance segmentation tasks",
-    "docker_image": "supervisely/import-export:6.73.4",
+    "docker_image": "supervisely/import-export:6.73.15",
     "instance_version": "6.8.73",
     "main_script": "src/main.py",
     "modal_template": "src/modal.html",
