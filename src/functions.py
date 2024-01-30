@@ -99,10 +99,13 @@ def upload_result_archive(api, task_id, project_id, project_name, project_dir, a
     sly.fs.mkdir(result_dir_path, remove_content_if_exists=True)
     result_archive = os.path.join(result_dir_path, archive_name)
     dir_size = get_directory_size(project_dir)
+    dir_size_gb = round(dir_size / (1024 * 1024 * 1024), 2)
+
     split = None
-    if dir_size > g.SPLIT_SIZE_BYTES:
-        app_logger.info(f"Result archive will be divided into parts by {g.SPLIT_SIZE} {g.SPLIT_MODE} each")
+    if dir_size > g.SIZE_LIMIT_BYTES:
+        app_logger.info(f"Result archive size ({dir_size_gb} GB) more than {g.SIZE_LIMIT} GB")
         split = f"{g.SPLIT_SIZE}{g.SPLIT_MODE}"
+        app_logger.info(f"It will be uploaded with splitting by {split}") 
     splits = sly.fs.archive_directory(project_dir, result_archive, split=split)
     app_logger.info(f"Result directory is archived {'with splitting' if splits else ''}")
 

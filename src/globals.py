@@ -32,9 +32,11 @@ MACHINE_MASKS = bool(strtobool(os.environ["modal.state.machineMasks"]))
 INSTANCE_MASKS = bool(strtobool(os.environ["modal.state.instanceMasks"]))
 THICKNESS = int(os.environ["modal.state.thickness"])
 
-SPLIT_MODE = "GB"
-SPLIT_SIZE = 10 if sly.is_community() else 100
-SPLIT_SIZE_BYTES = SPLIT_SIZE * 1024 * 1024 * 1024
+SIZE_LIMIT = 10 if sly.is_community() else 100
+SIZE_LIMIT_BYTES = SIZE_LIMIT * 1024 * 1024 * 1024
+SPLIT_MODE = "MB"
+SPLIT_SIZE = 500 # do not increase this value (memory issues)
+# SPLIT_SIZE_BYTES = SPLIT_SIZE * 1024 * 1024 * 1024
 
 STORAGE_DIR = sly.app.get_data_dir()
 if sly.fs.dir_exists(STORAGE_DIR):
