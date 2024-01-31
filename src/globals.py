@@ -32,7 +32,7 @@ MACHINE_MASKS = bool(strtobool(os.environ["modal.state.machineMasks"]))
 INSTANCE_MASKS = bool(strtobool(os.environ["modal.state.instanceMasks"]))
 THICKNESS = int(os.environ["modal.state.thickness"])
 
-SIZE_LIMIT = 10 # ! for tests if sly.is_community() else 100
+SIZE_LIMIT = 10 if sly.is_community() else 100
 SIZE_LIMIT_BYTES = SIZE_LIMIT * 1024 * 1024 * 1024
 SPLIT_MODE = "MB"
 SPLIT_SIZE = 500 # do not increase this value (memory issues)
