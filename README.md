@@ -112,9 +112,9 @@ Output example:
 **Step 4**: Result archive will be available for download:
 
 - single archive: in the **Tasks list** (image below) or from **Team Files**
-  - `Team Files`->`Export-as-masks`->`task_id`->`<projectId>_<projectName>.tar`
+  - `Team Files`->`tmp`->`supervisely`->`export`->`export-as-masks`->`task_id`->`<projectId>_<projectName>.tar`
 - split archive: all parts will be stored in the **Team Files** directory
-  - `Team Files`->`Export-as-masks`->`<task_id>`->`<projectId>_<projectName>_part_<part_number>.tar`
+  - `Team Files`->`tmp`->`supervisely`->`export`->`export-as-masks`->`<task_id>`
 
 <img src="https://i.imgur.com/hibPn9b.png"/>
 
@@ -122,7 +122,7 @@ Output example:
 
 In the case of a split archive:
 
-1. download all parts from `Team Files` directory (`Team Files`->`Export-as-masks`->`<task_id>`->`<projectId>_<projectName>_part_<part_number>.tar`)
+1. download all parts from `Team Files` directory (`Team Files`->`tmp`->`supervisely`->`export`->`export-as-masks`->`<task_id>`)
 2. After downloading all archive parts, you can extract them:
 
 - for Windows:
@@ -141,5 +141,5 @@ cat <projectId>_<projectName>.tar* | tar --options read_concatenated_archives -x
 
 ```bash
 cd <path_to_folder_with_archive_parts>
-cat '<projectId>_<projectName>.tar'* > result_archives.tar | tar -xvf concatenated_archives.tar
+cat '<projectId>_<projectName>.tar'* > result_archive.tar | tar -xvf result_archive.tar
 ```
