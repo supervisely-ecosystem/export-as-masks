@@ -5,4 +5,5 @@ debug
 .venv
 supervisely
 __pycache__
-.vscode
+storage/
+.DS_Store

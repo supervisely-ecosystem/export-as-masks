@@ -1,7 +1,5 @@
 import os
 
-import cv2
-
 import numpy as np
 import supervisely as sly
 from supervisely._utils import generate_free_name
@@ -11,14 +9,17 @@ import functions as f
 import globals as g
 
 
-@g.my_app.callback("export_as_masks")
-@sly.timeit
-def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
+def export_as_masks(api: sly.Api):
     project_info = api.project.get_info_by_id(g.PROJECT_ID)
-    project_dir = f.download_project(api, project_info.name, project_info.id)
+    project_dir = os.path.join(g.STORAGE_DIR, f"{project_info.id}_{project_info.name}")
+    sly.logger.debug(f"Project will be saved to: {project_dir}")
+    sly.Project.download(api, g.PROJECT_ID, project_dir)
+    sly.logger.debug("Project downloaded.")
 
     if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS:
+        sly.logger.debug("Started mask creation...")
         project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
+        sly.logger.debug(f"Readed local project: {project.name}")
         machine_colors = None
         if g.MACHINE_MASKS:
             machine_colors = {
@@ -32,6 +33,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
             )
 
         for dataset in project:
+            sly.logger.info(f"Working with dataset {dataset.name}...")
             ds_progress = sly.Progress(
                 "Processing dataset: {!r}/{!r}".format(project.name, dataset.name),
                 total_cnt=len(dataset),
@@ -56,6 +58,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                 mask_img_name = f"{os.path.splitext(item_name)[0]}.png"
 
                 if g.HUMAN_MASKS:
+                    sly.logger.debug("Creating human masks...")
                     raw_img = sly.image.read(item_paths.img_path)
                     overlay = raw_img.copy()
 
@@ -78,11 +81,10 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                     )
 
                 if g.MACHINE_MASKS:
+                    sly.logger.debug("Creating macnhine masks...")
                     machine_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
 
-                    sorted_labels = sorted(
-                        ann.labels, key=lambda x: x.area, reverse=True
-                    )
+                    sorted_labels = sorted(ann.labels, key=lambda x: x.area, reverse=True)
 
                     for label in sorted_labels:
                         label.geometry.draw(
@@ -94,6 +96,7 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                     f.convert2gray_and_save(machine_mask_path, machine_mask)
 
                 if g.INSTANCE_MASKS:
+                    sly.logger.debug("Creating instance masks...")
                     used_names = []
                     for label in ann.labels:
                         mask_name = generate_free_name(
@@ -109,42 +112,19 @@ def export_as_masks(api: sly.Api, task_id, context, state, app_logger):
                                 mask_name,
                             )
                         )
-                        instance_mask = np.zeros(
-                            shape=ann.img_size + (3,), dtype=np.uint8
-                        )
+                        instance_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
                         label.geometry.draw(
                             instance_mask, color=[255, 255, 255], thickness=g.THICKNESS
                         )
                         f.convert2gray_and_save(instance_mask_path, instance_mask)
 
                     ds_progress.iter_done_report()
-        sly.logger.info("Finished masks rendering.".format(project_info.name))
+                sly.logger.debug(f"Finished processing dataset {dataset.name}.")
+        sly.logger.info(f"Finished processing project {project.name}.")
 
-    f.upload_result_archive(
-        api=api,
-        task_id=task_id,
-        project_id=project_info.id,
-        project_name=project_info.name,
-        project_dir=project_dir,
-        app_logger=app_logger,
-    )
-
-    g.my_app.stop()
-
-
-def main():
-    sly.logger.info(
-        "Input arguments",
-        extra={
-            "TASK_ID": g.TASK_ID,
-            "context.teamId": g.TEAM_ID,
-            "context.workspaceId": g.WORKSPACE_ID,
-            "modal.state.slyProjectId": g.PROJECT_ID,
-        },
-    )
-
-    g.my_app.run(initial_events=[{"command": "export_as_masks"}])
+    sly.output.set_download(project_dir)
+    sly.logger.debug("Application finished, output set.")
 
 
 if __name__ == "__main__":
-    sly.main_wrapper("main", main, log_for_agent=False)
+    export_as_masks(g.api)
