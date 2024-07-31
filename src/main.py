@@ -87,10 +87,15 @@ def export_as_masks(api: sly.Api):
                     sorted_labels = sorted(ann.labels, key=lambda x: x.area, reverse=True)
 
                     for label in sorted_labels:
+                        if isinstance(label.geometry, sly.Cuboid2d):
+                            config = label.obj_class.geometry_config
+                        else:
+                            config = None
                         label.geometry.draw(
                             machine_mask,
                             color=machine_colors[label.obj_class.name],
                             thickness=g.THICKNESS,
+                            config=config,
                         )
                     machine_mask_path = os.path.join(machine_masks_dir, mask_img_name)
                     f.convert2gray_and_save(machine_mask_path, machine_mask)
@@ -113,8 +118,15 @@ def export_as_masks(api: sly.Api):
                             )
                         )
                         instance_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
+                        if isinstance(label.geometry, sly.Cuboid2d):
+                            config = label.obj_class.geometry_config
+                        else:
+                            config = None
                         label.geometry.draw(
-                            instance_mask, color=[255, 255, 255], thickness=g.THICKNESS
+                            instance_mask,
+                            color=[255, 255, 255],
+                            thickness=g.THICKNESS,
+                            config=config,
                         )
                         f.convert2gray_and_save(instance_mask_path, instance_mask)
 
