@@ -1,5 +1,6 @@
 import os
 
+import cv2
 import numpy as np
 import supervisely as sly
 from supervisely._utils import generate_free_name
@@ -64,12 +65,19 @@ def export_as_masks(api: sly.Api):
 
                     for label in ann.labels:
                         temp_overlay = overlay.copy()
-                        label.geometry.draw(
-                            temp_overlay,
-                            color=label.obj_class.color,
-                            config=label.obj_class.geometry_config,
-                            thickness=g.THICKNESS,
-                        )
+                        if isinstance(label.geometry, sly.Cuboid2d):
+                            faces_vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
+                            for vertices in faces_vertices:
+                                cv2.fillPoly(
+                                    temp_overlay, pts=[vertices], color=label.obj_class.color
+                                )
+                        else:
+                            label.geometry.draw(
+                                temp_overlay,
+                                color=label.obj_class.color,
+                                config=label.obj_class.geometry_config,
+                                thickness=g.THICKNESS,
+                            )
 
                         overlay = (
                             (overlay.astype(np.uint16) + temp_overlay.astype(np.uint16)) / 2
@@ -87,16 +95,17 @@ def export_as_masks(api: sly.Api):
                     sorted_labels = sorted(ann.labels, key=lambda x: x.area, reverse=True)
 
                     for label in sorted_labels:
+                        color = machine_colors[label.obj_class.name]
                         if isinstance(label.geometry, sly.Cuboid2d):
-                            config = label.obj_class.geometry_config
+                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
+                            for vertices in faces_vertices:
+                                cv2.fillPoly(machine_mask, pts=[vertices], color=color)
                         else:
-                            config = None
-                        label.geometry.draw(
-                            machine_mask,
-                            color=machine_colors[label.obj_class.name],
-                            thickness=g.THICKNESS,
-                            config=config,
-                        )
+                            label.geometry.draw(
+                                machine_mask,
+                                color=color,
+                                thickness=g.THICKNESS,
+                            )
                     machine_mask_path = os.path.join(machine_masks_dir, mask_img_name)
                     f.convert2gray_and_save(machine_mask_path, machine_mask)
 
@@ -119,15 +128,13 @@ def export_as_masks(api: sly.Api):
                         )
                         instance_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
                         if isinstance(label.geometry, sly.Cuboid2d):
-                            config = label.obj_class.geometry_config
+                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
+                            for vertices in faces_vertices:
+                                cv2.fillPoly(instance_mask, pts=[vertices], color=[255, 255, 255])
                         else:
-                            config = None
-                        label.geometry.draw(
-                            instance_mask,
-                            color=[255, 255, 255],
-                            thickness=g.THICKNESS,
-                            config=config,
-                        )
+                            label.geometry.draw(
+                                instance_mask, color=[255, 255, 255], thickness=g.THICKNESS
+                            )
                         f.convert2gray_and_save(instance_mask_path, instance_mask)
 
                     ds_progress.iter_done_report()
