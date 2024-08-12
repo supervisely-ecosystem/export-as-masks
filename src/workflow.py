@@ -21,6 +21,6 @@ def workflow_output(api: sly.Api, file: Union[int, sly.api.file_api.FileInfo]):
                     "mainLink": {"url": f"/files/{file.id}/true/?teamId={file.team_id}", "title": "Download"}
                     }}
         api.app.workflow.add_output_file(file, meta=meta)
-        sly.logger.debug(f"Workflow: Output project - {file}")
+        sly.logger.debug(f"Workflow: Output file - {file}")
     except Exception as e:
         sly.logger.debug(f"Failed to add output to the workflow: {repr(e)}")
