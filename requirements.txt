@@ -1,2 +1,0 @@
-# supervisely==6.73.145
-git+https://github.com/supervisely/supervisely.git@update-app-workflow
