@@ -8,7 +8,7 @@ from supervisely.io.json import dump_json_file
 
 import functions as f
 import globals as g
-
+import workflow as w
 
 def export_as_masks(api: sly.Api):
     project_info = api.project.get_info_by_id(g.PROJECT_ID)
@@ -16,6 +16,7 @@ def export_as_masks(api: sly.Api):
     sly.logger.debug(f"Project will be saved to: {project_dir}")
     sly.Project.download(api, g.PROJECT_ID, project_dir)
     sly.logger.debug("Project downloaded.")
+    w.workflow_input(api, project_info.id)
 
     if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS:
         sly.logger.debug("Started mask creation...")
@@ -141,7 +142,8 @@ def export_as_masks(api: sly.Api):
                 sly.logger.debug(f"Finished processing dataset {dataset.name}.")
         sly.logger.info(f"Finished processing project {project.name}.")
 
-    sly.output.set_download(project_dir)
+    file_info = sly.output.set_download(project_dir)
+    w.workflow_output(api, file_info)
     sly.logger.debug("Application finished, output set.")
 
 
