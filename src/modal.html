@@ -7,6 +7,16 @@
                description="Semantic segmentation RGB masks with colors of classes. (0, 0, 0) is for background (unlabeled area)">
         <el-checkbox v-model="state.humanMasks">enable</el-checkbox>
     </sly-field>
+    <sly-field v-if="state.humanMasks"
+               title="Resize Human masks"
+               description="Whether to resize human masks or not">
+        <el-checkbox v-model="state.resizeHumanMasks">enable</el-checkbox>
+    </sly-field>
+    <sly-field v-if="state.humanMasks && state.resizeHumanMasks"
+               title="Resize percentage"
+               description="The percentage to resize human masks by">
+        <el-input-number v-model="state.resizePercent" :min="1" :max="100"></el-input-number>
+    </sly-field>
     <sly-field title="Machine masks"
                description="Additional RGB masks for NN where colors are the indices of classes">
         <el-checkbox v-model="state.machineMasks">enable</el-checkbox>

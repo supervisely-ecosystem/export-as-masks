@@ -84,9 +84,19 @@ def export_as_masks(api: sly.Api):
                             (overlay.astype(np.uint16) + temp_overlay.astype(np.uint16)) / 2
                         ).astype(np.uint8)
 
+                    array_to_write = np.concatenate([raw_img, overlay], axis=1)
+
+                    if g.RESIZE_HUMAN_MASKS:
+                        new_dimensions = (
+                            int(overlay.shape[0] * (g.RESIZE_PERCENT / 100)),
+                            int(overlay.shape[1] * (g.RESIZE_PERCENT / 100)),
+                            overlay.shape[2],
+                        )
+                        array_to_write.resize(new_dimensions)
+
                     sly.image.write(
                         os.path.join(human_masks_dir, mask_img_name),
-                        np.concatenate([raw_img, overlay], axis=1),
+                        array_to_write,
                     )
 
                 if g.MACHINE_MASKS:

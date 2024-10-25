@@ -27,6 +27,8 @@ api = sly.Api.from_env()
 
 Image.MAX_IMAGE_PIXELS = None
 HUMAN_MASKS = bool(strtobool(os.environ["modal.state.humanMasks"]))
+RESIZE_HUMAN_MASKS = bool(strtobool(os.environ["modal.state.resizeHumanMasks"]))
+RESIZE_PERCENT = int(os.environ["modal.state.resizePercent"])
 MACHINE_MASKS = bool(strtobool(os.environ["modal.state.machineMasks"]))
 INSTANCE_MASKS = bool(strtobool(os.environ["modal.state.instanceMasks"]))
 THICKNESS = int(os.environ["modal.state.thickness"])
