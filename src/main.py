@@ -90,7 +90,6 @@ def export_as_masks(api: sly.Api):
                         new_dimensions = (
                             int(array_to_write.shape[0] * (g.RESIZE_PERCENT / 100)),
                             int(array_to_write.shape[1] * (g.RESIZE_PERCENT / 100)),
-                            overlay.shape[2],
                         )
                         cv2.resize(array_to_write, new_dimensions, interpolation=cv2.INTER_AREA)
 
