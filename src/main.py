@@ -88,8 +88,8 @@ def export_as_masks(api: sly.Api):
 
                     if g.RESIZE_HUMAN_MASKS:
                         new_dimensions = (
-                            int(overlay.shape[0] * (g.RESIZE_PERCENT / 100)),
-                            int(overlay.shape[1] * (g.RESIZE_PERCENT / 100)),
+                            int(array_to_write.shape[0] * (g.RESIZE_PERCENT / 100)),
+                            int(array_to_write.shape[1] * (g.RESIZE_PERCENT / 100)),
                             overlay.shape[2],
                         )
                         array_to_write.resize(new_dimensions)
