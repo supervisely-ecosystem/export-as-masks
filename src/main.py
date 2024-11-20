@@ -92,7 +92,7 @@ def export_as_masks(api: sly.Api):
                             int(array_to_write.shape[1] * (g.RESIZE_PERCENT / 100)),
                             overlay.shape[2],
                         )
-                        array_to_write.resize(new_dimensions)
+                        cv2.resize(array_to_write, new_dimensions, interpolation=cv2.INTER_AREA)
 
                     sly.image.write(
                         os.path.join(human_masks_dir, mask_img_name),
