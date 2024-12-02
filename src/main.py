@@ -17,7 +17,7 @@ def export_as_masks(api: sly.Api):
     project_info = api.project.get_info_by_id(g.PROJECT_ID)
     project_dir = os.path.join(g.STORAGE_DIR, f"{project_info.id}_{project_info.name}")
     sly.logger.debug(f"Project will be saved to: {project_dir}")
-    download_async_or_sync(api, project_info.id, project_dir, semaphore=asyncio.Semaphore(50))
+    download_async_or_sync(api, project_info.id, project_dir, project_info=project_info)
     sly.logger.debug("Project downloaded.")
     w.workflow_input(api, project_info.id)
 
