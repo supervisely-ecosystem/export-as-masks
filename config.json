@@ -1,33 +1,28 @@
 {
-  "name": "Export as masks",
-  "type": "app",
-  "version": "2.0.0",
-  "categories": [
-    "images",
-    "export"
-  ],
-  "description": "For semantic and instance segmentation tasks",
-  "docker_image": "supervisely/import-export:6.73.162",
-  "instance_version": "6.11.8",
-  "main_script": "src/main.py",
-  "modal_template": "src/modal.html",
-  "modal_template_state": {
-    "humanMasks": true,
-    "resizeHumanMasks": false,
-    "resizePercent": 50,
-    "machineMasks": true,
-    "instanceMasks": false,
-    "thickness": 2
-  },
-  "task_location": "workspace_tasks",
-  "icon": "https://i.imgur.com/Dz0f248.png",
-  "icon_background": "#FFFFFF",
-  "headless": true,
-  "context_menu": {
-    "target": [
-      "images_project"
-    ],
-    "context_root": "Download as"
-  },
-  "poster": "https://user-images.githubusercontent.com/106374579/186664538-21e06509-7372-44db-9f0e-512be05cad91.png"
+	"name": "Export as masks",
+	"type": "app",
+	"version": "2.0.0",
+	"categories": ["images", "export"],
+	"description": "For semantic and instance segmentation tasks",
+	"docker_image": "supervisely/import-export:6.73.248",
+	"instance_version": "6.12.12",
+	"main_script": "src/main.py",
+	"modal_template": "src/modal.html",
+	"modal_template_state": {
+		"humanMasks": true,
+		"resizeHumanMasks": false,
+		"resizePercent": 50,
+		"machineMasks": true,
+		"instanceMasks": false,
+		"thickness": 2
+	},
+	"task_location": "workspace_tasks",
+	"icon": "https://i.imgur.com/Dz0f248.png",
+	"icon_background": "#FFFFFF",
+	"headless": true,
+	"context_menu": {
+		"target": ["images_project"],
+		"context_root": "Download as"
+	},
+	"poster": "https://user-images.githubusercontent.com/106374579/186664538-21e06509-7372-44db-9f0e-512be05cad91.png"
 }
