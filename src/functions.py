@@ -13,21 +13,16 @@ def convert2gray_and_save(mask_path, mask):
 
 def get_cuboid_sorted_points(vertices: Dict) -> Tuple[np.array, np.array, np.array]:
     visible_faces = [
-        ["face1-topleft", "face1-topright", "face1-bottomright", "face1-bottomleft"],  # front face
-        ["face1-topleft", "face2-topleft", "face2-topright", "face1-topright"],  # top face
-        [
-            "face1-topright",
-            "face2-topright",
-            "face2-bottomright",
-            "face1-bottomright",
-        ],  # right face
-        [
-            "face1-bottomright",
-            "face2-bottomright",
-            "face2-bottomleft",
-            "face1-bottomleft",
-        ],  # bottom face
-        ["face1-bottomleft", "face2-bottomleft", "face2-topleft", "face1-topleft"],  # left face
+        # front face
+        ["face1-topleft", "face1-topright", "face1-bottomright", "face1-bottomleft"],
+        # top face
+        ["face1-topleft", "face2-topleft", "face2-topright", "face1-topright"],
+        # right face
+        ["face1-topright", "face2-topright", "face2-bottomright", "face1-bottomright"],
+        # bottom face
+        ["face1-bottomright", "face2-bottomright", "face2-bottomleft", "face1-bottomleft"],
+        # left face
+        ["face1-bottomleft", "face2-bottomleft", "face2-topleft", "face1-topleft"],
     ]
     faces_vertices = []
     for face in visible_faces:
