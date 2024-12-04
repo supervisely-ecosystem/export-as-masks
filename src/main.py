@@ -5,18 +5,16 @@ import numpy as np
 import supervisely as sly
 from supervisely._utils import generate_free_name
 from supervisely.io.json import dump_json_file
-from supervisely.project.download import download_async_or_sync
 
 import functions as f
 import globals as g
 import workflow as w
 
-
 def export_as_masks(api: sly.Api):
     project_info = api.project.get_info_by_id(g.PROJECT_ID)
     project_dir = os.path.join(g.STORAGE_DIR, f"{project_info.id}_{project_info.name}")
     sly.logger.debug(f"Project will be saved to: {project_dir}")
-    download_async_or_sync(api, project_info.id, project_dir, project_info=project_info)
+    sly.Project.download(api, g.PROJECT_ID, project_dir)
     sly.logger.debug("Project downloaded.")
     w.workflow_input(api, project_info.id)
 
