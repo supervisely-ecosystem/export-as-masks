@@ -23,6 +23,9 @@ def export_as_masks(api: sly.Api):
     if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS:
         sly.logger.debug("Started mask creation...")
         project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
+        print(project.meta)
+        sly.logger.info(project.meta)
+        sly.logger.info(project.meta.tag_metas)
         sly.logger.debug(f"Readed local project: {project.name}")
         machine_colors = None
         if g.MACHINE_MASKS:
@@ -58,8 +61,13 @@ def export_as_masks(api: sly.Api):
 
             for item_name in dataset:
                 item_paths = dataset.get_item_paths(item_name)
-                ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
                 mask_img_name = f"{os.path.splitext(item_name)[0]}.png"
+                try:
+                    ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
+                except Exception as e:
+                    sly.logger.warning(f"Error reading annotation: {e}")
+                    ds_progress.iter_done_report()
+                    continue
 
                 if g.HUMAN_MASKS:
                     sly.logger.debug("Creating human masks...")
