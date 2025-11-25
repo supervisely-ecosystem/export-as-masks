@@ -13,12 +13,26 @@ import workflow as w
 
 
 def export_as_masks(api: sly.Api):
-    project_info = api.project.get_info_by_id(g.PROJECT_ID)
+    if g.PROJECT_ID is None:
+        project_id = api.dataset.get_info_by_id(g.DATASET_ID).project_id
+    else:
+        project_id = g.PROJECT_ID
+    project_info = api.project.get_info_by_id(project_id)
     project_dir = os.path.join(g.STORAGE_DIR, f"{project_info.id}_{project_info.name}")
     sly.logger.debug(f"Project will be saved to: {project_dir}")
-    download_async_or_sync(api, project_info.id, project_dir, project_info=project_info)
+    download_async_or_sync(
+        api,
+        project_info.id,
+        project_dir,
+        project_info=project_info,
+        dataset_ids=[g.DATASET_ID] if g.DATASET_ID else None,
+    )
     sly.logger.debug("Project downloaded.")
-    w.workflow_input(api, project_info.id)
+    if g.DATASET_ID:
+        dataset_info = api.dataset.get_info_by_id(g.DATASET_ID)
+        w.workflow_input(api, dataset_info.id, "dataset")
+    else:
+        w.workflow_input(api, project_info.id, "project")
 
     if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS:
         sly.logger.debug("Started mask creation...")
