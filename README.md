@@ -25,8 +25,11 @@ Export prepares downloadable `.tar` archive, that contains:
 - human masks - RGB masks where every pixel has the color of the corresponding class (semantic segmentation)
 - machine masks. Notice: if you open machine mask image in standard image viewer, it will look like completely black image, but it is not. Class colors for machine mask are generated automatically as indices of classes. `(0, 0, 0)` - is always a background (unlabeled area), (1, 1, 1) - for class #1, (2, 2, 2) - for class #2, etc ... Mapping between machine colors and classes in machine mask is saved in `obj_class_to_machine_color.json` file.
 - instance masks - BW masks for every object on the image (instance segmentation)
+- semantic masks (RGB) - RGB masks where objects are colored with classes colors, `(0,0,0)` - background.
 
-🏋️ Starting from version v2.1.11 application supports split archives. If the archive file size is too big, it will be split into several parts. Learn more below in the "How to extract split archives" section.
+**Release notes:**
+- 🏋️ Starting from version `v2.1.11` application supports split archives. If the archive file size is too big, it will be split into several parts. Learn more below in the "How to extract split archives" section.
+- 🎨 `v3.2.7`: added new option to export "semantic RGB masks" - RGB masks where objects are colored with classes colors, `(0,0,0)` - background.
 
 For example:
 
@@ -54,6 +57,10 @@ Output example:
 │   │   ├── cats_1.png
 │   │   ├── ...
 │   │   └── cats_9.png
+│   ├── masks_semantic_rgb
+│   │   ├── cats_1.png
+│   │   ├── ...
+│   │   └── cats_9.png
 │   ├── masks_instances
 │   │   ├── cats_1
 │   │   │   ├── cats_1.png
@@ -78,6 +85,10 @@ Output example:
     │   ├── ...
     │   └── dogs_9.jpg
     ├── masks_human
+    │   ├── dogs_1.png
+    │   ├── ...
+    │   └── dogs_9.png
+    ├── masks_semantic_rgb
     │   ├── dogs_1.png
     │   ├── ...
     │   └── dogs_9.png
