@@ -72,6 +72,10 @@ def export_as_masks(api: sly.Api):
             if g.INSTANCE_MASKS:
                 instances_masks_dir = os.path.join(dataset.directory, "masks_instances")
                 sly.fs.mkdir(instances_masks_dir)
+            semantic_rgb_masks_dir = None
+            if g.SEMANTIC_RGB_MASKS:
+                semantic_rgb_masks_dir = os.path.join(dataset.directory, "masks_semantic_rgb")
+                sly.fs.mkdir(semantic_rgb_masks_dir)
 
             for item_name in dataset:
                 item_paths = dataset.get_item_paths(item_name)
@@ -144,6 +148,29 @@ def export_as_masks(api: sly.Api):
                             )
                     machine_mask_path = os.path.join(machine_masks_dir, mask_img_name)
                     f.convert2gray_and_save(machine_mask_path, machine_mask)
+
+                if g.SEMANTIC_RGB_MASKS:
+                    sly.logger.debug("Creating semantic RGB masks...")
+                    semantic_rgb_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
+
+                    for label in ann.labels:
+                        if isinstance(label.geometry, sly.Cuboid2d):
+                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
+                            for vertices in faces_vertices:
+                                cv2.fillPoly(
+                                    semantic_rgb_mask,
+                                    pts=[vertices],
+                                    color=label.obj_class.color,
+                                )
+                        else:
+                            label.geometry.draw(
+                                semantic_rgb_mask,
+                                color=label.obj_class.color,
+                                config=label.obj_class.geometry_config,
+                                thickness=g.THICKNESS,
+                            )
+                    semantic_rgb_mask_path = os.path.join(semantic_rgb_masks_dir, mask_img_name)
+                    sly.image.write(semantic_rgb_mask_path, semantic_rgb_mask)
 
                 if g.INSTANCE_MASKS:
                     sly.logger.debug("Creating instance masks...")

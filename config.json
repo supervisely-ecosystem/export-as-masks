@@ -13,6 +13,7 @@
 		"resizeHumanMasks": false,
 		"resizePercent": 50,
 		"machineMasks": true,
+        "semanticRgbMasks": false,
 		"instanceMasks": false,
 		"thickness": 2
 	},
