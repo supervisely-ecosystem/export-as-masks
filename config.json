@@ -9,10 +9,10 @@
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
   "modal_template_state": {
-    "humanMasks": false,
+    "humanMasks": true,
     "resizeHumanMasks": false,
     "resizePercent": 50,
-    "machineMasks": false,
+    "machineMasks": true,
     "semanticRgbMasks": false,
     "instanceMasks": false,
     "thickness": 2
