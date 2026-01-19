@@ -53,6 +53,16 @@ def export_as_masks(api: sly.Api):
                 indent=2,
             )
 
+        if g.SEMANTIC_RGB_MASKS:
+            semantic_colors = {
+                obj_class.name: obj_class.color for obj_class in project.meta.obj_classes
+            }
+            dump_json_file(
+                semantic_colors,
+                os.path.join(project_dir, "obj_class_to_semantic_color.json"),
+                indent=2,
+            )
+
         for dataset in project:
             sly.logger.info(f"Working with dataset {dataset.name}...")
             ds_progress = sly.Progress(
