@@ -34,7 +34,7 @@ def export_as_masks(api: sly.Api):
     else:
         w.workflow_input(api, project_info.id, "project")
 
-    if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS:
+    if g.MACHINE_MASKS or g.HUMAN_MASKS or g.INSTANCE_MASKS or g.SEMANTIC_RGB_MASKS:
         sly.logger.debug("Started mask creation...")
         project = sly.Project(directory=project_dir, mode=sly.OpenMode.READ)
         print(project.meta)
