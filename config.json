@@ -4,8 +4,8 @@
   "version": "2.0.0",
   "categories": ["images", "export"],
   "description": "For semantic and instance segmentation tasks",
-  "docker_image": "supervisely/base-py-sdk-hardened:6.73.564",
-  "instance_version": "6.15.60",
+  "docker_image": "supervisely/base-py-sdk-hardened:6.74.10",
+  "instance_version": "6.17.8",
   "main_script": "src/main.py",
   "modal_template": "src/modal.html",
   "modal_template_state": {

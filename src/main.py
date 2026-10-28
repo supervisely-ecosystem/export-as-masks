@@ -20,12 +20,16 @@ def export_as_masks(api: sly.Api):
     project_info = api.project.get_info_by_id(project_id)
     project_dir = os.path.join(g.STORAGE_DIR, f"{project_info.id}_{project_info.name}")
     sly.logger.debug(f"Project will be saved to: {project_dir}")
+    dataset_ids = None
+    if g.DATASET_ID:
+        # The selected dataset and everything nested in it.
+        dataset_ids = f.dataset_with_descendants(api, project_info.id, g.DATASET_ID)
     download_async_or_sync(
         api,
         project_info.id,
         project_dir,
         project_info=project_info,
-        dataset_ids=[g.DATASET_ID] if g.DATASET_ID else None,
+        dataset_ids=dataset_ids,
     )
     sly.logger.debug("Project downloaded.")
     if g.DATASET_ID:
@@ -87,9 +91,10 @@ def export_as_masks(api: sly.Api):
                 semantic_rgb_masks_dir = os.path.join(dataset.directory, "masks_semantic_rgb")
                 sly.fs.mkdir(semantic_rgb_masks_dir)
 
+            base_names = f.mask_base_names(dataset.get_items_names())
             for item_name in dataset:
                 item_paths = dataset.get_item_paths(item_name)
-                mask_img_name = f"{os.path.splitext(item_name)[0]}.png"
+                mask_img_name = f"{base_names[item_name]}.png"
                 try:
                     ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
                 except Exception as e:
@@ -146,16 +151,7 @@ def export_as_masks(api: sly.Api):
 
                     for label in sorted_labels:
                         color = machine_colors[label.obj_class.name]
-                        if isinstance(label.geometry, sly.Cuboid2d):
-                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
-                            for vertices in faces_vertices:
-                                cv2.fillPoly(machine_mask, pts=[vertices], color=color)
-                        else:
-                            label.geometry.draw(
-                                machine_mask,
-                                color=color,
-                                thickness=g.THICKNESS,
-                            )
+                        f.draw_solid(label, machine_mask, color, g.THICKNESS)
                     machine_mask_path = os.path.join(machine_masks_dir, mask_img_name)
                     f.convert2gray_and_save(machine_mask_path, machine_mask)
 
@@ -164,21 +160,13 @@ def export_as_masks(api: sly.Api):
                     semantic_rgb_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
 
                     for label in ann.labels:
-                        if isinstance(label.geometry, sly.Cuboid2d):
-                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
-                            for vertices in faces_vertices:
-                                cv2.fillPoly(
-                                    semantic_rgb_mask,
-                                    pts=[vertices],
-                                    color=label.obj_class.color,
-                                )
-                        else:
-                            label.geometry.draw(
-                                semantic_rgb_mask,
-                                color=label.obj_class.color,
-                                config=label.obj_class.geometry_config,
-                                thickness=g.THICKNESS,
-                            )
+                        f.draw_solid(
+                            label,
+                            semantic_rgb_mask,
+                            label.obj_class.color,
+                            g.THICKNESS,
+                            config=label.obj_class.geometry_config,
+                        )
                     semantic_rgb_mask_path = os.path.join(semantic_rgb_masks_dir, mask_img_name)
                     sly.image.write(semantic_rgb_mask_path, semantic_rgb_mask)
 
@@ -188,30 +176,23 @@ def export_as_masks(api: sly.Api):
                     for label in ann.labels:
                         mask_name = generate_free_name(
                             used_names=used_names,
-                            possible_name=f"{label.obj_class.name}.png",
+                            possible_name=f"{f.safe_file_name(label.obj_class.name)}.png",
                             with_ext=True,
                         )
                         used_names.append(mask_name)
                         instance_mask_path = os.path.join(
                             os.path.join(
                                 instances_masks_dir,
-                                os.path.splitext(item_name)[0],
+                                base_names[item_name],
                                 mask_name,
                             )
                         )
                         instance_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
-                        if isinstance(label.geometry, sly.Cuboid2d):
-                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
-                            for vertices in faces_vertices:
-                                cv2.fillPoly(instance_mask, pts=[vertices], color=[255, 255, 255])
-                        else:
-                            label.geometry.draw(
-                                instance_mask, color=[255, 255, 255], thickness=g.THICKNESS
-                            )
+                        f.draw_solid(label, instance_mask, [255, 255, 255], g.THICKNESS)
                         f.convert2gray_and_save(instance_mask_path, instance_mask)
 
-                    ds_progress.iter_done_report()
-                sly.logger.debug(f"Finished processing dataset {dataset.name}.")
+                ds_progress.iter_done_report()
+            sly.logger.debug(f"Finished processing dataset {dataset.name}.")
         sly.logger.info(f"Finished processing project {project.name}.")
 
     file_info = sly.output.set_download(project_dir)
