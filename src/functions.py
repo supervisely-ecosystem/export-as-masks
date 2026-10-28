@@ -45,4 +45,8 @@ def draw_solid(
         for vertices in get_cuboid_sorted_points(geometry.nodes):
             cv2.fillPoly(canvas, pts=[vertices], color=color)
         return
+    if isinstance(geometry, sly.AlphaMask):
+        # AlphaMask.draw blends the color by alpha (class value 2 at alpha 128 -> 1);
+        # a mask needs the exact value wherever the object is present.
+        geometry = sly.Bitmap(geometry.data > 0, origin=geometry.origin)
     geometry.draw(canvas, color=color, config=config, thickness=thickness)
