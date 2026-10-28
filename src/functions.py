@@ -1,5 +1,6 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Optional, Tuple
 
+import cv2
 import numpy as np
 import supervisely as sly
 from PIL import Image
@@ -29,3 +30,19 @@ def get_cuboid_sorted_points(vertices: Dict) -> Tuple[np.array, np.array, np.arr
         face_vertices = [[vertices[p].location.col, vertices[p].location.row] for p in face]
         faces_vertices.append(face_vertices)
     return np.array(faces_vertices)
+
+
+def draw_solid(
+    label: sly.Label,
+    canvas: np.ndarray,
+    color: List[int],
+    thickness: int,
+    config: Optional[Dict] = None,
+) -> None:
+    """Draws one label in a single color (machine, semantic RGB and instance masks)."""
+    geometry = label.geometry
+    if isinstance(geometry, sly.Cuboid2d):
+        for vertices in get_cuboid_sorted_points(geometry.nodes):
+            cv2.fillPoly(canvas, pts=[vertices], color=color)
+        return
+    geometry.draw(canvas, color=color, config=config, thickness=thickness)

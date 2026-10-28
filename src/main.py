@@ -146,16 +146,7 @@ def export_as_masks(api: sly.Api):
 
                     for label in sorted_labels:
                         color = machine_colors[label.obj_class.name]
-                        if isinstance(label.geometry, sly.Cuboid2d):
-                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
-                            for vertices in faces_vertices:
-                                cv2.fillPoly(machine_mask, pts=[vertices], color=color)
-                        else:
-                            label.geometry.draw(
-                                machine_mask,
-                                color=color,
-                                thickness=g.THICKNESS,
-                            )
+                        f.draw_solid(label, machine_mask, color, g.THICKNESS)
                     machine_mask_path = os.path.join(machine_masks_dir, mask_img_name)
                     f.convert2gray_and_save(machine_mask_path, machine_mask)
 
@@ -164,21 +155,13 @@ def export_as_masks(api: sly.Api):
                     semantic_rgb_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
 
                     for label in ann.labels:
-                        if isinstance(label.geometry, sly.Cuboid2d):
-                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
-                            for vertices in faces_vertices:
-                                cv2.fillPoly(
-                                    semantic_rgb_mask,
-                                    pts=[vertices],
-                                    color=label.obj_class.color,
-                                )
-                        else:
-                            label.geometry.draw(
-                                semantic_rgb_mask,
-                                color=label.obj_class.color,
-                                config=label.obj_class.geometry_config,
-                                thickness=g.THICKNESS,
-                            )
+                        f.draw_solid(
+                            label,
+                            semantic_rgb_mask,
+                            label.obj_class.color,
+                            g.THICKNESS,
+                            config=label.obj_class.geometry_config,
+                        )
                     semantic_rgb_mask_path = os.path.join(semantic_rgb_masks_dir, mask_img_name)
                     sly.image.write(semantic_rgb_mask_path, semantic_rgb_mask)
 
@@ -200,14 +183,7 @@ def export_as_masks(api: sly.Api):
                             )
                         )
                         instance_mask = np.zeros(shape=ann.img_size + (3,), dtype=np.uint8)
-                        if isinstance(label.geometry, sly.Cuboid2d):
-                            vertices = f.get_cuboid_sorted_points(label.geometry.nodes)
-                            for vertices in faces_vertices:
-                                cv2.fillPoly(instance_mask, pts=[vertices], color=[255, 255, 255])
-                        else:
-                            label.geometry.draw(
-                                instance_mask, color=[255, 255, 255], thickness=g.THICKNESS
-                            )
+                        f.draw_solid(label, instance_mask, [255, 255, 255], g.THICKNESS)
                         f.convert2gray_and_save(instance_mask_path, instance_mask)
 
                     ds_progress.iter_done_report()
