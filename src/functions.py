@@ -91,3 +91,10 @@ def mask_base_names(item_names: List[str]) -> Dict[str, str]:
     return {
         name: (name if stem in repeated else stem) for name, stem in zip(item_names, stems)
     }
+
+
+def safe_file_name(name: str) -> str:
+    """A class name usable as one file name: path separators replaced with "_"."""
+    for sep in ("/", "\\"):
+        name = name.replace(sep, "_")
+    return name

@@ -176,7 +176,7 @@ def export_as_masks(api: sly.Api):
                     for label in ann.labels:
                         mask_name = generate_free_name(
                             used_names=used_names,
-                            possible_name=f"{label.obj_class.name}.png",
+                            possible_name=f"{f.safe_file_name(label.obj_class.name)}.png",
                             with_ext=True,
                         )
                         used_names.append(mask_name)
