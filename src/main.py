@@ -91,9 +91,10 @@ def export_as_masks(api: sly.Api):
                 semantic_rgb_masks_dir = os.path.join(dataset.directory, "masks_semantic_rgb")
                 sly.fs.mkdir(semantic_rgb_masks_dir)
 
+            base_names = f.mask_base_names(dataset.get_items_names())
             for item_name in dataset:
                 item_paths = dataset.get_item_paths(item_name)
-                mask_img_name = f"{os.path.splitext(item_name)[0]}.png"
+                mask_img_name = f"{base_names[item_name]}.png"
                 try:
                     ann = sly.Annotation.load_json_file(item_paths.ann_path, project.meta)
                 except Exception as e:
@@ -182,7 +183,7 @@ def export_as_masks(api: sly.Api):
                         instance_mask_path = os.path.join(
                             os.path.join(
                                 instances_masks_dir,
-                                os.path.splitext(item_name)[0],
+                                base_names[item_name],
                                 mask_name,
                             )
                         )

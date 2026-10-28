@@ -1,3 +1,4 @@
+import os
 from copy import deepcopy
 from typing import Dict, List, Optional, Tuple
 
@@ -77,3 +78,16 @@ def dataset_with_descendants(api: sly.Api, project_id: int, dataset_id: int) -> 
         ids.append(current)
         queue.extend(children.get(current, []))
     return ids
+
+
+def mask_base_names(item_names: List[str]) -> Dict[str, str]:
+    """Item name -> mask file name without ".png".
+
+    The name without extension, unless another item of the dataset has the same one
+    (a.jpg and a.png): then the full item name, so neither mask overwrites the other.
+    """
+    stems = [os.path.splitext(name)[0] for name in item_names]
+    repeated = {stem for stem in stems if stems.count(stem) > 1}
+    return {
+        name: (name if stem in repeated else stem) for name, stem in zip(item_names, stems)
+    }
