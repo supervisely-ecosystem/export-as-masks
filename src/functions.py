@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Dict, List, Optional, Tuple
 
 import cv2
@@ -49,4 +50,17 @@ def draw_solid(
         # AlphaMask.draw blends the color by alpha (class value 2 at alpha 128 -> 1);
         # a mask needs the exact value wherever the object is present.
         geometry = sly.Bitmap(geometry.data > 0, origin=geometry.origin)
+    if config and isinstance(geometry, sly.GraphNodes):
+        # The class config carries per-node/edge template colors; keep its edges, use `color`.
+        config = recolor_graph_config(config, color, geometry.items_json_field)
     geometry.draw(canvas, color=color, config=config, thickness=thickness)
+
+
+def recolor_graph_config(config: Dict, color: List[int], nodes_field: str = "nodes") -> Dict:
+    """Copy of a GraphNodes class config with every node and edge color set to `color`."""
+    config = deepcopy(config)
+    for node in (config.get(nodes_field) or {}).values():
+        node["color"] = list(color)
+    for edge in config.get("edges") or []:
+        edge["color"] = list(color)
+    return config
