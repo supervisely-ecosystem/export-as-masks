@@ -191,8 +191,8 @@ def export_as_masks(api: sly.Api):
                         f.draw_solid(label, instance_mask, [255, 255, 255], g.THICKNESS)
                         f.convert2gray_and_save(instance_mask_path, instance_mask)
 
-                    ds_progress.iter_done_report()
-                sly.logger.debug(f"Finished processing dataset {dataset.name}.")
+                ds_progress.iter_done_report()
+            sly.logger.debug(f"Finished processing dataset {dataset.name}.")
         sly.logger.info(f"Finished processing project {project.name}.")
 
     file_info = sly.output.set_download(project_dir)
