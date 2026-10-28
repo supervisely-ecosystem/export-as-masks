@@ -20,12 +20,16 @@ def export_as_masks(api: sly.Api):
     project_info = api.project.get_info_by_id(project_id)
     project_dir = os.path.join(g.STORAGE_DIR, f"{project_info.id}_{project_info.name}")
     sly.logger.debug(f"Project will be saved to: {project_dir}")
+    dataset_ids = None
+    if g.DATASET_ID:
+        # The selected dataset and everything nested in it.
+        dataset_ids = f.dataset_with_descendants(api, project_info.id, g.DATASET_ID)
     download_async_or_sync(
         api,
         project_info.id,
         project_dir,
         project_info=project_info,
-        dataset_ids=[g.DATASET_ID] if g.DATASET_ID else None,
+        dataset_ids=dataset_ids,
     )
     sly.logger.debug("Project downloaded.")
     if g.DATASET_ID:

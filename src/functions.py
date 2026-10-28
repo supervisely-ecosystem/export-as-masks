@@ -64,3 +64,16 @@ def recolor_graph_config(config: Dict, color: List[int], nodes_field: str = "nod
     for edge in config.get("edges") or []:
         edge["color"] = list(color)
     return config
+
+
+def dataset_with_descendants(api: sly.Api, project_id: int, dataset_id: int) -> List[int]:
+    """The selected dataset id followed by the ids of all its nested datasets."""
+    children = {}
+    for ds in api.dataset.get_list(project_id, recursive=True):
+        children.setdefault(ds.parent_id, []).append(ds.id)
+    ids, queue = [], [dataset_id]
+    while queue:
+        current = queue.pop(0)
+        ids.append(current)
+        queue.extend(children.get(current, []))
+    return ids
